@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "pax_express_client"
+version = "0.1.0"
+description = ""
+authors = ["Florian Ludwig <f.ludwig@greyrook.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+typer = "^0.3.2"
+
+[tool.poetry.dev-dependencies]
+
+[tool.poetry.scripts]
+paxexpress = 'pax_express_client.cli:app'
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
