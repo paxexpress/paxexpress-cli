@@ -7,8 +7,11 @@ authors = ["Florian Ludwig <f.ludwig@greyrook.com>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 typer = "^0.3.2"
+httpx = "^0.16.1"
 
 [tool.poetry.dev-dependencies]
+openapi-python-client = {path = "openapi-python-client"}
+
 
 [tool.poetry.scripts]
 paxexpress = 'pax_express_client.cli:app'
