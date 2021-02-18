@@ -10,11 +10,12 @@ typer = "^0.3.2"
 httpx = "^0.16.1"
 
 [tool.poetry.dev-dependencies]
-openapi-python-client = {path = "openapi-python-client"}
+pydantic = "^1.7.3"
+#openapi-python-client = {path = "openapi-python-client"}
 
 
 [tool.poetry.scripts]
-paxexpress = 'pax_express_client.cli:app'
+paxexpress = 'pax_express_client.app:app'
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
