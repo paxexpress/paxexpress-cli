@@ -5,9 +5,10 @@ description = ""
 authors = ["Florian Ludwig <f.ludwig@greyrook.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.7"
 typer = "^0.3.2"
 httpx = "^0.16.1"
+PyYAML = "^5.4.1"
 
 [tool.poetry.dev-dependencies]
 pydantic = "^1.7.3"

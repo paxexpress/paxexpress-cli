@@ -3,6 +3,10 @@
 # Usage
 
 ```shell
+poetry env use python3.7
+
+poetry shell
+
 poetry install
 
 paxexpress --help

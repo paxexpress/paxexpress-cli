@@ -1,6 +1,3 @@
-# """ A client library for accessing PAX Express """
-# from .client import AuthenticatedClient, Client
-
 from .settings import env_settings
 from .utils import (
     get_url,
