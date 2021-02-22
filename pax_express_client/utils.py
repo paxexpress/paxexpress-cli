@@ -74,8 +74,6 @@ def pydantic_to_prompt(model: ClassVar) -> Any:
 
         prompt = (
             f"{field_info.name} - [{'Required' if field_info.required else 'Optional'}] "
-            # f"{'-' if example_value else ''} {'example ->' if example_value else ''}"
-            # f" {f' {typer.style(text=str(example_value), fg=typer.colors.GREEN)} ' if example_value else ''}"
             f" [{field_info.outer_type_}]"
         )
         args = {"text": prompt, "type": field_info.type_}
