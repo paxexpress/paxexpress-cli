@@ -16,7 +16,7 @@ paxexpress --help
 ```shell
 paxexpress authentication login
 ```
-### logout
+#### logout
 ```shell
 paxexpress authentication logout
 ```
