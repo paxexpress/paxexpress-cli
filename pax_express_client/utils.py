@@ -59,7 +59,6 @@ def print_message(message: str):
     typer.echo(message)
 
 
-# todo: https://git.r0k.de/gr/internal/paxexpress/paxexpress-cli/-/issues/8
 def pydantic_to_prompt(model: ClassVar) -> Any:
     example = model.Config.schema_extra.get("example")
     fields = model.__fields__
