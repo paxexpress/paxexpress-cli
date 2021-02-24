@@ -17,7 +17,7 @@ def save_credential(username: str, password: str):
         )
 
 
-def get_credential() -> Union[Credential, None]:
+def get_credential() -> Optional[Credential]:
     try:
         with open(".credential", "r") as f:
             credential = yaml.safe_load(f)
