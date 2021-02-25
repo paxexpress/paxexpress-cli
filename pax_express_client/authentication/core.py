@@ -1,5 +1,5 @@
 import os
-from typing import Union
+from typing import Optional
 import yaml
 from .models import Credential
 from pax_express_client import print_error, print_message
