@@ -95,7 +95,6 @@ class PackageGetResponseModel(PackageModel):
     pass
 
 
-# todo: validate licenses
 class PackageCreateBodyModel(BaseModel):
     name: str
     desc: str

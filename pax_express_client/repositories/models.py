@@ -297,7 +297,6 @@ class RepoLinkPackageBodyModel(BaseModel):
 
     @validator("path_prefix")
     def path_prefix_validator(cls, v):
-        # todo: validate path depends on docs
         return v
 
     class Config:
