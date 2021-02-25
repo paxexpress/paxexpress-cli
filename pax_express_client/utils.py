@@ -18,7 +18,6 @@ def result_print(result: Union[dict, list, str], is_success: bool, status_code: 
     else:
         result_state = typer.style(text="Failed", fg=typer.colors.RED, bold=True)
         status_code = typer.style(text=f"{status_code}", fg=typer.colors.RED, bold=True)
-        error = typer.style(text=f'{result["detail"]}', fg=typer.colors.RED, bold=True)
     line = typer.style(f"{'-' * 20 + 'result' + '-' * 20}", fg=typer.colors.YELLOW)
     typer.echo(f"State: {result_state} with code: {status_code}")
     typer.echo(line)
