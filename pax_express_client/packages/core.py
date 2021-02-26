@@ -61,13 +61,13 @@ def search_packages(
     url = get_url("/search/packages")
     params = {}
     if name:
-        params.update({"name": {"$regex": f".*{name}.*"}})
+        params.update({"name": name})
     if subject:
-        params.update({"subject": {"$regex": f".*{subject}.*"}})
+        params.update({"subject": subject})
     if desc:
-        params.update({"desc": {"$regex": f".*{desc}.*"}})
+        params.update({"desc": desc})
     if repo:
-        params.update({"repo": {"$regex": f".*{repo}.*"}})
+        params.update({"repo": repo})
     response = httpx.get(url=url, params=params)
     return response_handler(response=response, return_with_out_model=True)
 
