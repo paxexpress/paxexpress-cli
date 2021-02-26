@@ -26,16 +26,21 @@ def get_all(
 def get(
     repo: str = Option(..., "-r", "--repo"),
     package: str = Option(..., "-p", "--package"),
-    attribute_values: Optional[str] = Option(
-        None, "-av", "--attribute_values", help="1 or 0"
+    attribute_values: bool = Option(
+        False,
+        "-av",
+        "--attribute_values",
+        help="include attribute_values",
     ),
 ):
     credential = get_credential()
     if credential:
-        args = {"subject": credential.user_name, "repo": repo, "package": package}
-        if attribute_values:
-            args.update({"attribute_values": attribute_values})
-        get_package(**args)
+        get_package(
+            subject=credential.user_name,
+            repo=repo,
+            package=package,
+            attribute_values=1 if attribute_values else 0,
+        )
 
 
 @package_cli.command(help="Create a package")

@@ -23,13 +23,9 @@ def get_all_packages(
     return response_handler(response=response, return_with_out_model=True)
 
 
-def get_package(
-    subject: str, package: str, repo: str, attribute_values: Optional[int] = 0
-):
+def get_package(subject: str, package: str, repo: str, attribute_values: int):
     url = get_url(f"/packages/{subject}/{repo}/{package}")
-    params = {}
-    if attribute_values == 1 or attribute_values == 0:
-        params.update({"attribute_values": attribute_values})
+    params = {"attribute_values": attribute_values}
     response = httpx.get(url=url, params=params)
     return response_handler(response=response, return_model=PackageModel)
 
