@@ -10,3 +10,5 @@ from .repositories.cli import repo_cli
 from .authentication.cli import authentication_cli
 from .authentication.core import get_credential
 from .packages.cli import package_cli
+from .versions.cli import version_cli
+from .files.cli import file_cli
