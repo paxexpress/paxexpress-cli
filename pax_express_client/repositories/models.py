@@ -159,9 +159,9 @@ class RepoModel(BaseModel):
     labels: List[str]
     created: datetime.datetime = datetime.datetime.now().isoformat()
     package_count: Optional[int] = 0
-    gpg_sign_metadata: bool
-    gpg_sign_files: bool
-    gpg_use_owner_key: bool
+    gpg_sign_metadata: Optional[bool]
+    gpg_sign_files: Optional[bool]
+    gpg_use_owner_key: Optional[bool]
     default_debian_architecture: Optional[str]
     default_debian_distribution: Optional[str]
     default_debian_component: Optional[str]

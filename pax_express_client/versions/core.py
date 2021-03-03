@@ -24,8 +24,7 @@ def get_version(
     subject: str, repo: str, package: str, version: str, attribute_values: int
 ):
     url = get_url(f"/packages/{subject}/{repo}/{package}/versions/{version}")
-    params = {}
-    params.update({"attribute_values": attribute_values})
+    params = {"attribute_values": attribute_values}
     response = httpx.get(url=url, params=params)
     return response_handler(response=response, return_model=VersionModel)
 

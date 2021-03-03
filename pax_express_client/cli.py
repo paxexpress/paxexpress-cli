@@ -11,9 +11,9 @@ cli = Typer()
 
 cli.add_typer(repo_cli, name="repository", help="work with repositories")
 cli.add_typer(authentication_cli, name="authentication", help="login and logout")
-cli.add_typer(package_cli, name="package", help="Word with packages")
-cli.add_typer(version_cli, name="version", help="Word with versions")
-cli.add_typer(file_cli, name="file", help="Word with files")
+cli.add_typer(package_cli, name="package", help="Work with packages")
+cli.add_typer(version_cli, name="version", help="Work with versions")
+cli.add_typer(file_cli, name="file", help="Work with files")
 
 if __name__ == "__main__":
     cli()

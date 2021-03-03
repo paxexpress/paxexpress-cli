@@ -44,7 +44,7 @@ def files_search(
         print_error("cant search name and sha1 at the same time")
         return
     if name:
-        params.update({"name": {"$regex": f".*{name}.*"}})
+        params.update({"name": name})
     if sha1:
         params.update({"sha1": sha1})
     response = httpx.get(url=url, params=params)
