@@ -26,25 +26,25 @@ class PackageModel(BaseModel):
     name: str
     repo: Optional[str]
     owner: Optional[str]
-    desc: str
-    labels: List[str]
+    desc: Optional[str]
+    labels: Optional[List[str]]
     attribute_names: Optional[List[str]]
-    licenses: List[str]
-    custom_licenses: List[str]
+    licenses: Optional[List[str]]
+    custom_licenses: Optional[List[str]]
     followers_count: Optional[int] = 0
     created: datetime.datetime = datetime.datetime.now().isoformat()
-    website_url: str
+    website_url: Optional[str]
     rating: Optional[float]
-    issue_tracker_url: str
+    issue_tracker_url: Optional[str]
     linked_to_repos: Optional[List[str]]
-    github_repo: str
-    github_release_notes_file: str
+    github_repo: Optional[str]
+    github_release_notes_file: Optional[str]
     public_download_numbers: Optional[bool] = False
     public_stats: Optional[bool] = True
     permissions: Optional[List[str]]
     versions: List[str] = []
     latest_version: Optional[str]
-    rating_count: int = 0
+    rating_count: Optional[int] = 0
     system_ids: Optional[List[str]]
     updated: datetime.datetime = datetime.datetime.now().isoformat()
     vcs_url: Optional[str]
@@ -97,18 +97,17 @@ class PackageGetResponseModel(PackageModel):
 
 class PackageCreateBodyModel(BaseModel):
     name: str
-    desc: str
-    labels: List[str]
-    licenses: List[str]
-    custom_licenses: List[str]
-    vcs_url: str
-    website_url: str
-    issue_tracker_url: str
-    github_repo: str
-    github_release_notes_file: str
-    public_download_numbers: bool
-    public_stats: bool
-
+    desc: Optional[str]
+    labels: Optional[List[str]]
+    # licenses: Optional[List[str]]
+    # custom_licenses: Optional[List[str]]
+    # vcs_url: Optional[str]
+    # website_url: Optional[str]
+    # issue_tracker_url: Optional[str]
+    # github_repo: Optional[str]
+    # github_release_notes_file: Optional[str]
+    # public_download_numbers: Optional[bool]
+    # public_stats: Optional[bool]
     class Config:
         schema_extra = {
             "example": {
@@ -135,16 +134,16 @@ class PackageDeleteResponseModel(GenericResponseModel):
 
 class PackageUpdateBodyModel(BaseModel):
     desc: str
-    labels: List[str]
-    licenses: List[str]
-    custom_licenses: List[str]
-    vcs_url: str
-    website_url: str
-    issue_tracker_url: str
-    github_repo: str
-    github_release_notes_file: str
-    public_download_numbers: bool
-    public_stats: bool
+    # labels: Optional[List[str]]
+    licenses: Optional[List[str]]
+    # custom_licenses:  Optional[List[str]]
+    # vcs_url: Optional[str]
+    # website_url:  Optional[str]
+    # issue_tracker_url:  Optional[str]
+    # github_repo:  Optional[str]
+    # github_release_notes_file:  Optional[str]
+    # public_download_numbers: Optional[bool]
+    # public_stats: Optional[bool]
 
     class Config:
         schema_extra = {

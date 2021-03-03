@@ -11,9 +11,10 @@ class GenericResponseModel(BaseModel):
         schema_extra = {"example": {"message": "success"}}
 
 
+# ----- versions -------
 class VersionModel(BaseModel):
     name: str
-    desc: str
+    desc: Optional[str]
     repo: Optional[str]
     package: Optional[str]
     owner: Optional[str]
@@ -22,7 +23,7 @@ class VersionModel(BaseModel):
     attribute_names: Optional[List[str]]
     created: datetime.datetime = datetime.datetime.now().isoformat()
     updated: datetime.datetime = datetime.datetime.now().isoformat()
-    released: datetime.datetime
+    released: Optional[datetime.datetime]
     github_release_notes_file: Optional[str]  # (publishers only)
     github_use_tag_release_notes: Optional[str]  # (publishers only)
     vcs_tag: Optional[str]  # (publishers only)
@@ -59,17 +60,17 @@ class VersionGetResponseModel(VersionModel):
 
 class VersionCreateBodyModel(BaseModel):
     name: str
-    released: str
-    desc: str
-    github_release_notes_file: Optional[str]
-    github_use_tag_release_notes: Optional[str]
-    vcs_tag: Optional[str]
+    # released: Optional[str]
+    desc: Optional[str]
+    # github_release_notes_file: Optional[str]
+    # github_use_tag_release_notes: Optional[str]
+    # vcs_tag: Optional[str]
 
     class Config:
         schema_extra = {
             "example": {
                 "name": "1.1.5",
-                "released": "ISO8601 (yyyy-MM-dd'T'HH:mm:ss.SSSZ)",
+                "released": datetime.datetime.now().isoformat(),
                 "desc": "This version...",
                 "github_release_notes_file": "RELEASE.txt",
                 "github_use_tag_release_notes": True,
@@ -87,11 +88,11 @@ class VersionDeleteResponseModel(GenericResponseModel):
 
 
 class VersionUpdateBodyModel(BaseModel):
-    desc: str
-    github_release_notes_file: str
-    github_use_tag_release_notes: bool
-    vcs_tag: str
-    released: datetime.datetime
+    desc: Optional[str]
+    # github_release_notes_file: Optional[str]
+    # github_use_tag_release_notes: Optional[bool]
+    # vcs_tag: Optional[str]
+    # released: Optional[datetime.datetime]
 
     class Config:
         schema_extra = {

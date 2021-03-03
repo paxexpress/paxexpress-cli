@@ -53,22 +53,27 @@ def files_search(
 
 def file_upload(subject: str, repo: str, package: str, version: str, filename: str):
     url = get_url(f"/content/{subject}/{repo}/{package}/{version}/{filename}")
-
-    with open(filename) as file:
-        data = file.read()
-        headers = {
-            "x-bintray-publish": "1",
-            "content-type": "application/octet-stream",
-            "x-override-publish": "1",
-        }
-        response = httpx.put(url=url, data=data, headers=headers)
-        response_handler(response=response, return_with_out_model=True)
+    try:
+        with open(filename, "br") as file:
+            data = file.read()
+            headers = {
+                "x-bintray-publish": "1",
+                "content-type": "application/octet-stream",
+                "x-override-publish": "1",
+            }
+            response = httpx.put(url=url, data=data, headers=headers)
+            response_handler(response=response, return_with_out_model=True)
+    except Exception as e:
+        print_error(f"{e.args[0]}")
 
 
 def file_download(subject: str, repo: str, file_name: str, path_to_save: str):
     url = get_url(f"/{subject}/{repo}/storage/{file_name}")
     response = httpx.get(url=url)
-    path = os.path.join(path_to_save, file_name)
-    with open(path, "w") as file:
-        file.write(response.text)
-    print_message(f"file saved to {path}")
+    if response.status_code == 200:
+        path = os.path.join(path_to_save, file_name)
+        with open(path, "bw") as file:
+            file.write(response.text.encode("utf-8"))
+        print_message(f"file saved to {path}")
+    else:
+        print_error(response.text)

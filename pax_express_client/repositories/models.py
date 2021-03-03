@@ -149,19 +149,18 @@ class ReposGetResponseModel(BaseModel):
 class RepoModel(BaseModel):
     name: str
     owner: Optional[str]
-    type: str
-    private: str
+    type: Optional[str]
+    private: Optional[str]
     premium: Optional[bool] = False
-    version_update_max_days: str  # (only for Enterprise Account,
-    # if defined)
-    desc: str
+    version_update_max_days: Optional[str]  # (only for Enterprise Account,# if defined)
+    desc: Optional[str]
     business_unit: Optional[str]
-    labels: List[str]
+    labels: Optional[List[str]] = []
     created: datetime.datetime = datetime.datetime.now().isoformat()
     package_count: Optional[int] = 0
-    gpg_sign_metadata: Optional[bool]
-    gpg_sign_files: Optional[bool]
-    gpg_use_owner_key: Optional[bool]
+    gpg_sign_metadata: Optional[bool] = False
+    gpg_sign_files: Optional[bool] = False
+    gpg_use_owner_key: Optional[bool] = False
     default_debian_architecture: Optional[str]
     default_debian_distribution: Optional[str]
     default_debian_component: Optional[str]
@@ -190,20 +189,20 @@ class RepoModel(BaseModel):
 
 class RepoCreateBodyModel(BaseModel):
     name: str
-    type: str
-    private: bool
-    business_unit: Optional[str]
-    desc: str
-    labels: List[str]
-    gpg_sign_metadata: Optional[bool]
-    gpg_sign_files: Optional[bool]
-    gpg_use_owner_key: Optional[bool]
-    version_update_max_days: Optional[int]  # (only for Enterprise Account)
-    default_debian_architecture: Optional[str]
-    default_debian_distribution: Optional[str]
-    default_debian_component: Optional[str]
-    yum_metadata_depth: Optional[int]
-    yum_groups_file: Optional[str]
+    # type: Optional[str]
+    # private: Optional[bool] = False
+    # business_unit: Optional[str]
+    desc: Optional[str]
+    # labels: Optional[List[str]] = []
+    # gpg_sign_metadata: Optional[bool]
+    # gpg_sign_files: Optional[bool]
+    # gpg_use_owner_key: Optional[bool]
+    # version_update_max_days: Optional[int]  # (only for Enterprise Account)
+    # default_debian_architecture: Optional[str]
+    # default_debian_distribution: Optional[str]
+    # default_debian_component: Optional[str]
+    # yum_metadata_depth: Optional[int]
+    # yum_groups_file: Optional[str]
 
     class Config:
         extra = Extra.allow
@@ -222,24 +221,15 @@ class RepoCreateBodyModel(BaseModel):
             }
         }
 
-    # @validator("type")
-    # def type_validator(cls, v):
-    #     if v not in valid_repo_types:
-    #         raise HTTPException(
-    #             detail=f"invalid repository type: valid types are: {valid_repo_types}",
-    #             status_code=status.HTTP_400_BAD_REQUEST,
-    #         )
-    #     return v
-
 
 class RepoCreateResponseModel(BaseModel):
     name: str
     owner: str
-    type: str
-    private: bool
-    premium: Optional[bool]
+    type: Optional[str]
+    private: Optional[bool] = False
+    premium: Optional[bool] = False
     business_unit: Optional[str]
-    desc: str
+    desc: Optional[str]
     labels: List[str]
     created: datetime.datetime
     package_count: Optional[int]
@@ -262,13 +252,13 @@ class RepoCreateResponseModel(BaseModel):
 
 
 class RepoUpdateBodyModel(BaseModel):
-    business_unit: str
-    desc: str
-    labels: List[str]
-    gpg_sign_metadata: Optional[bool]
-    gpg_sign_files: Optional[bool]
-    gpg_use_owner_key: Optional[bool]
-    version_update_max_days: int
+    # business_unit: Optional[str]
+    desc: Optional[str]
+    # labels: List[str]
+    # gpg_sign_metadata: Optional[bool]
+    # gpg_sign_files: Optional[bool]
+    # gpg_use_owner_key: Optional[bool]
+    # version_update_max_days: Optional[int]
 
     class Config:
         schema_extra = {
@@ -297,6 +287,7 @@ class RepoLinkPackageBodyModel(BaseModel):
 
     @validator("path_prefix")
     def path_prefix_validator(cls, v):
+        # todo: validate path depends on docs : Ref https://git.r0k.de/gr/internal/paxexpress/paxexpress/-/issues/27
         return v
 
     class Config:

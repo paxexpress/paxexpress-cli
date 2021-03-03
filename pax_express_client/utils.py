@@ -43,9 +43,7 @@ def response_handler(
         elif return_with_out_model:
             return response.json()
     else:
-        result_print(
-            response.json(), is_success=False, status_code=response.status_code
-        )
+        result_print(response.text, is_success=False, status_code=response.status_code)
 
 
 def print_error(message: str):
