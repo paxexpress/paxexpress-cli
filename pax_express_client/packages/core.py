@@ -33,7 +33,7 @@ def get_package(subject: str, package: str, repo: str, attribute_values: int):
 def create_package(body: PackageCreateBodyModel, subject: str, repo: str):
     url = get_url(f"/packages/{subject}/{repo}")
     response = httpx.post(url=url, json=body.dict())
-    return response_handler(response=response, return_model=PackageGetResponseModel)
+    return response_handler(response=response)
 
 
 def delete_package(subject: str, repo: str, package: str):
