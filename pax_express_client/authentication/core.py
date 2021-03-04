@@ -10,6 +10,7 @@ from .models import (
 from pax_express_client import print_error, print_message, get_url, response_handler
 import httpx
 import keyring
+import typer
 
 
 def register(email: str, username: str, beta_key: str, password: str):
@@ -24,7 +25,7 @@ def register(email: str, username: str, beta_key: str, password: str):
         response = httpx.post(url=url, json=body.dict())
         response_handler(response=response, return_model=UserRegisterResponseModel)
     except ValidationError:
-        print_error("Invalid Email address")
+        print_error("Check your inputs")
 
 
 # todo: https://git.r0k.de/gr/paxexpress-cli/-/issues/6
@@ -35,20 +36,22 @@ def login(email: str, password: str):
 
         if response.status_code == 200:
             modeled_response = UserLoginResponseModel(**response.json())
-            print(modeled_response)
             keyring.set_password(
                 "pax.express", modeled_response.username, modeled_response.access_token
             )
             save_username(username=modeled_response.username)
+            print_message("you have successfully logged in")
+        else:
+            print_error(response.text)
     except ValidationError:
-        print_error("Invalid Email address")
+        print_error("Check your inputs")
 
 
 def logout():
     username = get_username()
     keyring.delete_password("pax.express", username)
     remove_info_file()
-    print_message("You have successfully logged out!")
+    print_message(f"You have successfully logged out {username}!")
 
 
 def get_username() -> str:
@@ -61,7 +64,9 @@ def get_username() -> str:
             else:
                 print_error("Please login!")
     except FileNotFoundError as ex:
-        print_error("Please login!")
+        username = typer.prompt("Username")
+        save_username(username)
+        return username
 
 
 def save_username(username: str):
@@ -71,7 +76,7 @@ def save_username(username: str):
 
 def remove_info_file():
     try:
-        os.remove(".info")
+        os.remove(".pax_info")
     except FileNotFoundError:
         pass
 

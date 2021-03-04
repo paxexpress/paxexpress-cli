@@ -67,7 +67,7 @@ def file_upload(repo: str, package: str, version: str, filename: str):
                 headers = {
                     "x-bintray-publish": "1",
                     "content-type": "application/octet-stream",
-                    "x-override-publish": "1",
+                    "x-bintray-override": "1",
                 }
                 headers.update(header)
                 response = httpx.put(url=url, data=data, headers=headers)
@@ -82,7 +82,7 @@ def file_download(subject: str, repo: str, file_name: str, path_to_save: str):
     if response.status_code == 200:
         path = os.path.join(path_to_save, file_name)
         with open(path, "bw") as file:
-            file.write(response.text.encode("utf-8"))
+            file.write(response.content)
         print_message(f"file saved to {path}")
     else:
         print_error(response.text)
