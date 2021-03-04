@@ -10,8 +10,8 @@ package_cli = Typer(name="package")
 def get_all(
     subject: str = Option(..., "-s", "--subject"),
     repo: str = Option(..., "-r", "--repo"),
-    start_pos: Optional[str] = Option(None, "-sp", "--start-pos"),
-    start_name: Optional[str] = Option(None, "-sn", "--start-name"),
+    start_pos: Optional[str] = Option(None, "--start-pos"),
+    start_name: Optional[str] = Option(None, "--start-name"),
 ):
     get_all_packages(
         subject=subject,
@@ -78,6 +78,6 @@ def search(
 def get_package_for_file(
     subject: str = Option(..., "-s", "--subject"),
     repo: str = Option(..., "-r", "--repo"),
-    file_path: str = Option(..., "-f", "--file_path"),
+    file_path: str = Option(..., "-f", "--file-path"),
 ):
     package_for_file(subject=subject, repo=repo, file_path=file_path)

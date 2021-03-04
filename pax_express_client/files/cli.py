@@ -62,9 +62,9 @@ def search(
     repo: str = Option(..., "-r", "--repo"),
     subject: str = Option(..., "-s", "--subject"),
     name: Optional[str] = Option(None, "-n", "--name"),
-    sha1: Optional[str] = Option(None, "-sh", "--sha1"),
-    start_pos: Optional[str] = Option(None, "-sp", "--start-pos"),
-    create_after: Optional[str] = Option(None, "-ca", "--create-after"),
+    sha1: Optional[str] = Option(None, "--sha1"),
+    start_pos: Optional[str] = Option(None, "--start-pos"),
+    create_after: Optional[str] = Option(None, "--create-after"),
 ):
     files_search(
         name=name,
@@ -81,7 +81,7 @@ def upload_file(
     repo: str = Option(..., "-r", "--repo"),
     package: str = Option(..., "-p", "--package"),
     version: str = Option(..., "-v", "--version"),
-    filename: str = Option(..., "-fn", "--filename"),
+    filename: str = Option(..., "-f", "--filename"),
 ):
 
     file_upload(
@@ -96,8 +96,8 @@ def upload_file(
 def download(
     subject: str = Option(..., "-s", "--subject"),
     repo: str = Option(..., "-r", "--repo"),
-    filename: str = Option(..., "-fn", "--filename"),
-    path_to_save: str = Option(..., "-ps", "--path-to-save"),
+    filename: str = Option(..., "-f", "--filename"),
+    path_to_save: str = Option(..., "-p", "--path-to-save"),
 ):
 
     file_download(

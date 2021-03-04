@@ -52,7 +52,6 @@ def files_search(
         params.update({"name": name})
     if sha1:
         params.update({"sha1": sha1})
-    print(params)
     response = httpx.get(url=url, params=params)
     response_handler(response=response, return_with_out_model=True)
 

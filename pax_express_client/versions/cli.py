@@ -10,7 +10,6 @@ from .core import (
 )
 from .models import VersionCreateBodyModel, VersionUpdateBodyModel
 
-# from ..authentication.core import get_credential
 from pax_express_client import pydantic_to_prompt
 
 version_cli = Typer(name="version")
@@ -22,7 +21,7 @@ def latest(
     repo: str = Option(..., "-r", "--repo"),
     package: str = Option(..., "-p", "--package"),
     attribute_values: Optional[str] = Option(
-        None, "-av", "--attribute-values", help="1 or 0"
+        None, "-a", "--attribute-values", help="1 or 0"
     ),
 ):
 
@@ -42,7 +41,7 @@ def get(
     version: str = Option(..., "-v", "--version"),
     attribute_values: bool = Option(
         False,
-        "-av",
+        "-a",
         "--attribute-values",
         help="include attribute_values",
     ),
