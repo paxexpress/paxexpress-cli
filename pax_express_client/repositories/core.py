@@ -13,10 +13,10 @@ from pax_express_client import get_url, response_handler
 from ..authentication.core import get_auth_header_and_username
 
 
-def create_repo(body: RepoCreateBodyModel, repo: str) -> RepoCreateResponseModel:
+def create_repo(body: RepoCreateBodyModel) -> RepoCreateResponseModel:
     username, headers = get_auth_header_and_username()
     if username:
-        url: str = get_url(f"/repos/{username}/{repo}")
+        url: str = get_url(f"/repos/{username}/{body.name}")
         response = httpx.post(url=url, json=body.dict(), headers=headers)
         return response_handler(response, RepoCreateResponseModel)
 
