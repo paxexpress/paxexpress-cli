@@ -1,5 +1,6 @@
 import os
 from typing import Optional, Tuple
+import pathlib
 from pydantic import EmailStr, ValidationError
 import yaml
 from .models import (
@@ -11,6 +12,8 @@ from pax_express_client import print_error, print_message, get_url, response_han
 import httpx
 import keyring
 import typer
+
+pax_info_file_path = os.path.join(pathlib.Path.home(), ".pax_info")
 
 
 def register(email: str, username: str, beta_key: str, password: str):
@@ -58,7 +61,7 @@ def logout():
 
 def get_username() -> str:
     try:
-        with open(".pax_info", "r") as f:
+        with open(pax_info_file_path, "r") as f:
             info = yaml.safe_load(f)
             username = info.get("username", None)
             if username:
@@ -72,13 +75,13 @@ def get_username() -> str:
 
 
 def save_username(username: str):
-    with open(".pax_info", "w") as f:
+    with open(pax_info_file_path, "w") as f:
         yaml.dump({"username": username}, f, default_flow_style=False)
 
 
 def remove_info_file():
     try:
-        os.remove(".pax_info")
+        os.remove(pax_info_file_path)
     except FileNotFoundError:
         pass
 
