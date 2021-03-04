@@ -41,8 +41,10 @@ def login(email: str, password: str):
             )
             save_username(username=modeled_response.username)
             print_message("you have successfully logged in")
+            return
         else:
             print_error(response.text)
+            return
     except ValidationError:
         print_error("Check your inputs")
 

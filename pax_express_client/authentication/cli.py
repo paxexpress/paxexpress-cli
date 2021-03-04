@@ -1,6 +1,5 @@
 from typer import Typer, Argument, Option, prompt
 from .core import login as login_func, register as register_func, logout as logout_func
-
 from pax_express_client import print_message, print_error
 
 authentication_cli = Typer(name="authentication")

@@ -21,8 +21,8 @@ def versions_file(
     package: str = Option(..., "-p", "--package"),
     include_unpublished: bool = Option(
         False,
-        "-ip",
-        "--include_unpublished",
+        "-U",
+        "--include-unpublished",
         help="include unpublished files",
     ),
 ):
@@ -42,8 +42,8 @@ def packages_file(
     version: str = Option(..., "-v", "--version"),
     include_unpublished: bool = Option(
         False,
-        "-ip",
-        "--include_unpublished",
+        "-U",
+        "--include-unpublished",
         help="include unpublished files",
     ),
 ):
@@ -63,8 +63,8 @@ def search(
     subject: str = Option(..., "-s", "--subject"),
     name: Optional[str] = Option(None, "-n", "--name"),
     sha1: Optional[str] = Option(None, "-sh", "--sha1"),
-    start_pos: Optional[str] = Option(None, "-sp", "--start_pos"),
-    create_after: Optional[str] = Option(None, "-ca", "--create_after"),
+    start_pos: Optional[str] = Option(None, "-sp", "--start-pos"),
+    create_after: Optional[str] = Option(None, "-ca", "--create-after"),
 ):
     files_search(
         name=name,
@@ -97,7 +97,7 @@ def download(
     subject: str = Option(..., "-s", "--subject"),
     repo: str = Option(..., "-r", "--repo"),
     filename: str = Option(..., "-fn", "--filename"),
-    path_to_save: str = Option(..., "-ps", "--path_to_save"),
+    path_to_save: str = Option(..., "-ps", "--path-to-save"),
 ):
 
     file_download(

@@ -22,7 +22,7 @@ def latest(
     repo: str = Option(..., "-r", "--repo"),
     package: str = Option(..., "-p", "--package"),
     attribute_values: Optional[str] = Option(
-        None, "-av", "--attribute_values", help="1 or 0"
+        None, "-av", "--attribute-values", help="1 or 0"
     ),
 ):
 
@@ -43,7 +43,7 @@ def get(
     attribute_values: bool = Option(
         False,
         "-av",
-        "--attribute_values",
+        "--attribute-values",
         help="include attribute_values",
     ),
 ):
@@ -97,7 +97,7 @@ def update(
 def get_versions_file(
     subject: str = Option(..., "-s", "--subject"),
     repo: str = Option(..., "-r", "--repo"),
-    file_path: str = Option(..., "-f", "--file_path"),
+    file_path: str = Option(..., "-f", "--file-path"),
 ):
 
     get_version_for_file(subject=subject, repo=repo, file_path=file_path)
