@@ -1,6 +1,11 @@
 from typing import Optional
 import datetime
-from pax_express_client import get_url, response_handler, print_message
+from pax_express_client import (
+    get_url,
+    response_handler,
+    print_message,
+    get_auth_header_and_username,
+)
 import httpx
 from pax_express_client import print_error
 import os
@@ -39,7 +44,7 @@ def files_search(
     create_after: Optional[datetime.datetime] = None,
 ):
     url = get_url(f"/search/file")
-    params = {"owner": subject, "repo": repo}
+    params = {"subject": subject, "repo": repo}
     if name and sha1:
         print_error("cant search name and sha1 at the same time")
         return
@@ -47,24 +52,28 @@ def files_search(
         params.update({"name": name})
     if sha1:
         params.update({"sha1": sha1})
+    print(params)
     response = httpx.get(url=url, params=params)
     response_handler(response=response, return_with_out_model=True)
 
 
-def file_upload(subject: str, repo: str, package: str, version: str, filename: str):
-    url = get_url(f"/content/{subject}/{repo}/{package}/{version}/{filename}")
-    try:
-        with open(filename, "br") as file:
-            data = file.read()
-            headers = {
-                "x-bintray-publish": "1",
-                "content-type": "application/octet-stream",
-                "x-override-publish": "1",
-            }
-            response = httpx.put(url=url, data=data, headers=headers)
-            response_handler(response=response, return_with_out_model=True)
-    except Exception as e:
-        print_error(f"{e.args[0]}")
+def file_upload(repo: str, package: str, version: str, filename: str):
+    username, header = get_auth_header_and_username()
+    if username:
+        url = get_url(f"/content/{username}/{repo}/{package}/{version}/{filename}")
+        try:
+            with open(filename, "br") as file:
+                data = file.read()
+                headers = {
+                    "x-bintray-publish": "1",
+                    "content-type": "application/octet-stream",
+                    "x-override-publish": "1",
+                }
+                headers.update(header)
+                response = httpx.put(url=url, data=data, headers=headers)
+                response_handler(response=response, return_with_out_model=True)
+        except Exception as e:
+            print_error(f"{e.args[0]}")
 
 
 def file_download(subject: str, repo: str, file_name: str, path_to_save: str):

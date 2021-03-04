@@ -3,6 +3,7 @@ from pprint import pprint
 import typer
 from pax_express_client import env_settings
 from httpx import Response
+import keyring
 
 
 def get_url(url: str) -> str:

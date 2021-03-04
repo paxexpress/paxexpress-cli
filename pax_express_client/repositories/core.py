@@ -10,14 +10,15 @@ from .models import (
     RepoSearchResponseModel,
 )
 from pax_express_client import get_url, response_handler
+from ..authentication.core import get_auth_header_and_username
 
 
-def create_repo(
-    body: RepoCreateBodyModel, subject: str, repo: str
-) -> RepoCreateResponseModel:
-    url: str = get_url(f"/repos/{subject}/{repo}")
-    response = httpx.post(url=url, json=body.dict())
-    return response_handler(response, RepoCreateResponseModel)
+def create_repo(body: RepoCreateBodyModel, repo: str) -> RepoCreateResponseModel:
+    username, headers = get_auth_header_and_username()
+    if username:
+        url: str = get_url(f"/repos/{username}/{repo}")
+        response = httpx.post(url=url, json=body.dict(), headers=headers)
+        return response_handler(response, RepoCreateResponseModel)
 
 
 def get_repo(subject: str, repo: str) -> RepoModel:
@@ -32,16 +33,20 @@ def get_repos(subject: str) -> ReposGetResponseModel:
     return response_handler(response=response, return_with_out_model=True)
 
 
-def update_repo(body: RepoUpdateBodyModel, subject: str, repo: str):
-    url: str = get_url(f"/repos/{subject}/{repo}")
-    response = httpx.patch(url=url, json=body.dict())
-    response_handler(response=response)
+def update_repo(body: RepoUpdateBodyModel, repo: str):
+    username, headers = get_auth_header_and_username()
+    if username:
+        url: str = get_url(f"/repos/{username}/{repo}")
+        response = httpx.patch(url=url, json=body.dict(), headers=headers)
+        response_handler(response=response)
 
 
-def delete_repo(subject: str, repo: str) -> RepoDeleteResponseModel:
-    url: str = get_url(f"/repo/{subject}/{repo}")
-    response = httpx.delete(url=url)
-    return response_handler(response, RepoDeleteResponseModel)
+def delete_repo(repo: str) -> RepoDeleteResponseModel:
+    username, headers = get_auth_header_and_username()
+    if username:
+        url: str = get_url(f"/repo/{username}/{repo}")
+        response = httpx.delete(url=url, headers=headers)
+        return response_handler(response, RepoDeleteResponseModel)
 
 
 def search_repo(

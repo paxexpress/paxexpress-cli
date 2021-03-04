@@ -98,7 +98,7 @@ class PackageGetResponseModel(PackageModel):
 class PackageCreateBodyModel(BaseModel):
     name: str
     desc: Optional[str]
-    labels: Optional[List[str]]
+    # labels: Optional[List[str]]
     # licenses: Optional[List[str]]
     # custom_licenses: Optional[List[str]]
     # vcs_url: Optional[str]

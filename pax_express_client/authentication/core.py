@@ -1,34 +1,85 @@
 import os
-from typing import Optional
+from typing import Optional, Tuple
+from pydantic import EmailStr, ValidationError
 import yaml
-from .models import Credential
-from pax_express_client import print_error, print_message
+from .models import (
+    UserRegisterBodyModel,
+    UserRegisterResponseModel,
+    UserLoginResponseModel,
+)
+from pax_express_client import print_error, print_message, get_url, response_handler
+import httpx
+import keyring
+
+
+def register(email: str, username: str, beta_key: str, password: str):
+    url: str = get_url(url=f"/user/register")
+    try:
+        body = UserRegisterBodyModel(
+            username=username,
+            email=EmailStr(email),
+            password=password,
+            beta_key=beta_key,
+        )
+        response = httpx.post(url=url, json=body.dict())
+        response_handler(response=response, return_model=UserRegisterResponseModel)
+    except ValidationError:
+        print_error("Invalid Email address")
 
 
 # todo: https://git.r0k.de/gr/paxexpress-cli/-/issues/6
-def login(user_name: str, password: str):
-    save_credential(username=user_name, password=password)
-
-
-def save_credential(username: str, password: str):
-    with open(".credential", "w") as f:
-        yaml.dump(
-            {"user_name": username, "password": password}, f, default_flow_style=False
-        )
-
-
-def get_credential() -> Optional[Credential]:
+def login(email: str, password: str):
+    url: str = get_url(f"/user/login")
     try:
-        with open(".credential", "r") as f:
-            credential = yaml.safe_load(f)
-            return Credential(**credential)
+        response = httpx.post(url=url, data={"username": email, "password": password})
+
+        if response.status_code == 200:
+            modeled_response = UserLoginResponseModel(**response.json())
+            print(modeled_response)
+            keyring.set_password(
+                "pax.express", modeled_response.username, modeled_response.access_token
+            )
+            save_username(username=modeled_response.username)
+    except ValidationError:
+        print_error("Invalid Email address")
+
+
+def logout():
+    username = get_username()
+    keyring.delete_password("pax.express", username)
+    remove_info_file()
+    print_message("You have successfully logged out!")
+
+
+def get_username() -> str:
+    try:
+        with open(".pax_info", "r") as f:
+            info = yaml.safe_load(f)
+            username = info.get("username", None)
+            if username:
+                return username
+            else:
+                print_error("Please login!")
     except FileNotFoundError as ex:
         print_error("Please login!")
 
 
-def remove_credential():
+def save_username(username: str):
+    with open(".pax_info", "w") as f:
+        yaml.dump({"username": username}, f, default_flow_style=False)
+
+
+def remove_info_file():
     try:
-        os.remove(".credential")
+        os.remove(".info")
     except FileNotFoundError:
         pass
-    print_message("You have successfully logged out!")
+
+
+def get_auth_header_and_username() -> Optional[Tuple[Optional[str], Optional[dict]]]:
+    username = get_username()
+    token: str = keyring.get_password("pax.express", username=username)
+    if token:
+        return username, {"Authorization": f"Bearer {token}"}
+    print_error("Please login!")
+    return None, None
