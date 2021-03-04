@@ -1,6 +1,6 @@
-from typer import Typer, Argument, Option, prompt
-from .core import login as login_func, register as register_func, logout as logout_func
-from pax_express_client import print_message, print_error
+from typer import Typer, prompt
+from pax_express_client import print_error
+from . import core
 
 authentication_cli = Typer(name="authentication")
 
@@ -16,7 +16,7 @@ def register():
         if password != confirmed_password:
             print_error("Please make sure your passwords match!")
         else:
-            register_func(
+            core.register(
                 email=email, username=username, password=password, beta_key=beta_key
             )
             break
@@ -26,9 +26,9 @@ def register():
 def login():
     email: str = prompt("Email")
     password = prompt("Password", hide_input=True)
-    login_func(email=email, password=password)
+    core.login(email=email, password=password)
 
 
 @authentication_cli.command(name="logout", help="logout")
 def logout():
-    logout_func()
+    core.logout()
