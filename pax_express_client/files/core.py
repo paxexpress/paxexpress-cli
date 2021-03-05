@@ -9,6 +9,7 @@ from pax_express_client import (
 import httpx
 from pax_express_client import print_error
 import os
+import typer
 
 
 def get_versions_file(
@@ -70,7 +71,13 @@ def file_upload(repo: str, package: str, version: str, filename: str):
                 "x-bintray-override": "1",
             }
             headers.update(header)
-            response = httpx.put(url=url, data=data, headers=headers)
+            password = typer.prompt("Password", hide_input=True)
+            response = httpx.put(
+                url=url,
+                data=data,
+                headers=headers,
+                auth=httpx.BasicAuth(username=username, password=password),
+            )
             response_handler(response=response, return_with_out_model=True)
     except Exception as e:
         print_error(f"{e.args[0]}")
