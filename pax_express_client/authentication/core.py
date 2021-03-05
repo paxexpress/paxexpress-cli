@@ -1,6 +1,8 @@
 import os
 from typing import Optional, Tuple
 import pathlib
+
+from keyring.errors import PasswordDeleteError
 from pydantic import EmailStr, ValidationError
 import yaml
 from .models import (
@@ -53,13 +55,17 @@ def login(email: str, password: str):
 
 
 def logout():
-    username = get_username()
-    keyring.delete_password("pax.express", username)
+    username = get_username(is_logout=True)
+    try:
+        keyring.delete_password("pax.express", username)
+    except PasswordDeleteError:
+        pass
     remove_info_file()
-    print_message(f"You have successfully logged out {username}!")
+    if username is not None:
+        print_message(f"You have successfully logged out {username}!")
 
 
-def get_username() -> str:
+def get_username(is_logout: bool = False) -> Optional[str]:
     try:
         with open(pax_info_file_path, "r") as f:
             info = yaml.safe_load(f)
@@ -69,9 +75,12 @@ def get_username() -> str:
             else:
                 print_error("Please login!")
     except FileNotFoundError as ex:
-        username = typer.prompt("Username")
-        save_username(username)
-        return username
+        if not is_logout:
+            username = typer.prompt("Username")
+            save_username(username)
+            return username
+        else:
+            print_error("Please login!")
 
 
 def save_username(username: str):
