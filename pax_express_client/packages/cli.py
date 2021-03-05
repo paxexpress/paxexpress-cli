@@ -43,8 +43,7 @@ def get(
 
 @package_cli.command(help="Create a package")
 def create(repo: str = Option(..., "-r", "--repo")):
-    body = pydantic_to_prompt(model=PackageCreateBodyModel)
-    create_package(body=body, repo=repo)
+    create_package(repo=repo)
 
 
 @package_cli.command(help="Delete a package")

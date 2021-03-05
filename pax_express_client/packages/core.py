@@ -2,11 +2,10 @@ from typing import Optional
 from .models import (
     PackageModel,
     PackageCreateBodyModel,
-    PackageGetResponseModel,
     PackageDeleteResponseModel,
     PackageUpdateBodyModel,
 )
-from pax_express_client import get_url, response_handler
+from pax_express_client import get_url, response_handler, pydantic_to_prompt
 import httpx
 from ..authentication.core import get_auth_header_and_username
 
@@ -31,30 +30,32 @@ def get_package(subject: str, package: str, repo: str, attribute_values: int):
     return response_handler(response=response, return_model=PackageModel)
 
 
-def create_package(body: PackageCreateBodyModel, repo: str):
+def create_package(repo: str):
     username, headers = get_auth_header_and_username()
-    if username:
-        url = get_url(f"/packages/{username}/{repo}")
-        response = httpx.post(url=url, json=body.dict(), headers=headers)
-        return response_handler(response=response)
+    if not username:
+        return
+    body = pydantic_to_prompt(model=PackageCreateBodyModel)
+    url = get_url(f"/packages/{username}/{repo}")
+    response = httpx.post(url=url, json=body.dict(), headers=headers)
+    return response_handler(response=response)
 
 
 def delete_package(repo: str, package: str):
     username, headers = get_auth_header_and_username()
-    if username:
-        url = get_url(f"/packages/{username}/{repo}/{package}")
-        response = httpx.delete(url=url, headers=headers)
-        return response_handler(
-            response=response, return_model=PackageDeleteResponseModel
-        )
+    if not username:
+        return
+    url = get_url(f"/packages/{username}/{repo}/{package}")
+    response = httpx.delete(url=url, headers=headers)
+    return response_handler(response=response, return_model=PackageDeleteResponseModel)
 
 
 def update_package(body: PackageUpdateBodyModel, repo: str, package: str):
     username, headers = get_auth_header_and_username()
-    if username:
-        url = get_url(f"/packages/{username}/{repo}/{package}")
-        response = httpx.patch(url=url, json=body.dict(), headers=headers)
-        response_handler(response=response)
+    if not username:
+        return
+    url = get_url(f"/packages/{username}/{repo}/{package}")
+    response = httpx.patch(url=url, json=body.dict(), headers=headers)
+    response_handler(response=response)
 
 
 def search_packages(

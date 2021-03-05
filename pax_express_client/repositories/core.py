@@ -9,16 +9,18 @@ from .models import (
     RepoDeleteResponseModel,
     RepoSearchResponseModel,
 )
-from pax_express_client import get_url, response_handler
+from pax_express_client import get_url, response_handler, pydantic_to_prompt
 from ..authentication.core import get_auth_header_and_username
 
 
-def create_repo(body: RepoCreateBodyModel) -> RepoCreateResponseModel:
+def create_repo():
     username, headers = get_auth_header_and_username()
-    if username:
-        url: str = get_url(f"/repos/{username}/{body.name}")
-        response = httpx.post(url=url, json=body.dict(), headers=headers)
-        return response_handler(response, RepoCreateResponseModel)
+    if not username:
+        return
+    body = pydantic_to_prompt(model=RepoCreateBodyModel)
+    url: str = get_url(f"/repos/{username}/{body.name}")
+    response = httpx.post(url=url, json=body.dict(), headers=headers)
+    response_handler(response, RepoCreateResponseModel)
 
 
 def get_repo(subject: str, repo: str) -> RepoModel:
@@ -33,20 +35,23 @@ def get_repos(subject: str) -> ReposGetResponseModel:
     return response_handler(response=response, return_with_out_model=True)
 
 
-def update_repo(body: RepoUpdateBodyModel, repo: str):
+def update_repo(repo: str):
     username, headers = get_auth_header_and_username()
-    if username:
-        url: str = get_url(f"/repos/{username}/{repo}")
-        response = httpx.patch(url=url, json=body.dict(), headers=headers)
-        response_handler(response=response)
+    if not username:
+        return
+    body = pydantic_to_prompt(model=RepoUpdateBodyModel)
+    url: str = get_url(f"/repos/{username}/{repo}")
+    response = httpx.patch(url=url, json=body.dict(), headers=headers)
+    response_handler(response=response)
 
 
-def delete_repo(repo: str) -> RepoDeleteResponseModel:
+def delete_repo(repo: str):
     username, headers = get_auth_header_and_username()
-    if username:
-        url: str = get_url(f"/repo/{username}/{repo}")
-        response = httpx.delete(url=url, headers=headers)
-        return response_handler(response, RepoDeleteResponseModel)
+    if not username:
+        return
+    url: str = get_url(f"/repo/{username}/{repo}")
+    response = httpx.delete(url=url, headers=headers)
+    return response_handler(response, RepoDeleteResponseModel)
 
 
 def search_repo(

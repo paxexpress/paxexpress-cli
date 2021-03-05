@@ -6,7 +6,7 @@ from .models import (
     VersionUpdateBodyModel,
     VersionGetFileVersionResponseModel,
 )
-from pax_express_client import get_url, response_handler
+from pax_express_client import get_url, response_handler, pydantic_to_prompt
 from ..authentication.core import get_auth_header_and_username
 
 
@@ -30,28 +30,33 @@ def get_version(
     return response_handler(response=response, return_model=VersionModel)
 
 
-def create_version(body: VersionCreateBodyModel, repo: str, package: str):
+def create_version(repo: str, package: str):
     username, headers = get_auth_header_and_username()
-    if username:
-        url = get_url(f"/packages/{username}/{repo}/{package}/versions")
-        response = httpx.post(url=url, json=body.dict(), headers=headers)
-        response_handler(response=response, return_with_out_model=True)
+    if not username:
+        return
+    body = pydantic_to_prompt(model=VersionCreateBodyModel)
+    url = get_url(f"/packages/{username}/{repo}/{package}/versions")
+    response = httpx.post(url=url, json=body.dict(), headers=headers)
+    response_handler(response=response, return_with_out_model=True)
 
 
 def delete_version(repo: str, package: str, version: str):
     username, headers = get_auth_header_and_username()
-    if username:
-        url = get_url(f"/packages/{username}/{repo}/{package}/versions/{version}")
-        response = httpx.delete(url=url, headers=headers)
-        return response_handler(response=response)
+    if not username:
+        return
+    url = get_url(f"/packages/{username}/{repo}/{package}/versions/{version}")
+    response = httpx.delete(url=url, headers=headers)
+    return response_handler(response=response)
 
 
-def update_version(body: VersionUpdateBodyModel, repo: str, package: str, version: str):
+def update_version(repo: str, package: str, version: str):
     username, headers = get_auth_header_and_username()
-    if username:
-        url = get_url(f"/packages/{username}/{repo}/{package}/versions/{version}")
-        response = httpx.patch(url=url, json=body.dict(), headers=headers)
-        response_handler(response=response, return_with_out_model=True)
+    if not username:
+        return
+    body = pydantic_to_prompt(model=VersionUpdateBodyModel)
+    url = get_url(f"/packages/{username}/{repo}/{package}/versions/{version}")
+    response = httpx.patch(url=url, json=body.dict(), headers=headers)
+    response_handler(response=response, return_with_out_model=True)
 
 
 def get_version_for_file(subject: str, repo: str, file_path: str):

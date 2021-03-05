@@ -58,21 +58,22 @@ def files_search(
 
 def file_upload(repo: str, package: str, version: str, filename: str):
     username, header = get_auth_header_and_username()
-    if username:
-        url = get_url(f"/content/{username}/{repo}/{package}/{version}/{filename}")
-        try:
-            with open(filename, "br") as file:
-                data = file.read()
-                headers = {
-                    "x-bintray-publish": "1",
-                    "content-type": "application/octet-stream",
-                    "x-bintray-override": "1",
-                }
-                headers.update(header)
-                response = httpx.put(url=url, data=data, headers=headers)
-                response_handler(response=response, return_with_out_model=True)
-        except Exception as e:
-            print_error(f"{e.args[0]}")
+    if not username:
+        return
+    url = get_url(f"/content/{username}/{repo}/{package}/{version}/{filename}")
+    try:
+        with open(filename, "br") as file:
+            data = file.read()
+            headers = {
+                "x-bintray-publish": "1",
+                "content-type": "application/octet-stream",
+                "x-bintray-override": "1",
+            }
+            headers.update(header)
+            response = httpx.put(url=url, data=data, headers=headers)
+            response_handler(response=response, return_with_out_model=True)
+    except Exception as e:
+        print_error(f"{e.args[0]}")
 
 
 def file_download(subject: str, repo: str, file_name: str, path_to_save: str):

@@ -20,14 +20,12 @@ def get(
 
 @repo_cli.command(name="create", help="create a repository")
 def create():
-    body = pydantic_to_prompt(model=RepoCreateBodyModel)
-    create_repo(body=body)
+    create_repo()
 
 
 @repo_cli.command(name="update", help="update a repository")
 def update(repo: str = Option(..., "-r", "--repo")):
-    body = pydantic_to_prompt(model=RepoUpdateBodyModel)
-    update_repo(body=body, repo=repo)
+    update_repo(repo=repo)
 
 
 @repo_cli.command(name="delete", help="delete a repository")

@@ -33,7 +33,6 @@ def register(email: str, username: str, beta_key: str, password: str):
         print_error("Check your inputs")
 
 
-# todo: https://git.r0k.de/gr/paxexpress-cli/-/issues/6
 def login(email: str, password: str):
     url: str = get_url(f"/user/login")
     try:
@@ -76,9 +75,16 @@ def get_username(is_logout: bool = False) -> Optional[str]:
                 print_error("Please login!")
     except FileNotFoundError as ex:
         if not is_logout:
-            username = typer.prompt("Username")
-            save_username(username)
-            return username
+            try:
+                username = typer.prompt("Username")
+                # check if token exist for this username
+                # if token exist, save username in .pax_info
+                token: str = keyring.get_password("pax.express", username=username)
+                if token:
+                    save_username(username)
+                return username
+            except PasswordDeleteError:
+                print_error("Please login!")
         else:
             print_error("Please login!")
 

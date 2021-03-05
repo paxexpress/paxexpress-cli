@@ -62,8 +62,7 @@ def create(
     package: str = Option(..., "-p", "--package"),
 ):
 
-    body = pydantic_to_prompt(model=VersionCreateBodyModel)
-    create_version(body=body, repo=repo, package=package)
+    create_version(repo=repo, package=package)
 
 
 @version_cli.command(name="delete", help="delete a version")
@@ -83,9 +82,7 @@ def update(
     version: str = Option(..., "-v", "--version"),
 ):
 
-    body = pydantic_to_prompt(model=VersionUpdateBodyModel)
     update_version(
-        body=body,
         repo=repo,
         version=version,
         package=package,
