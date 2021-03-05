@@ -75,15 +75,14 @@ def get_username(is_logout: bool = False) -> Optional[str]:
                 print_error("Please login!")
     except FileNotFoundError as ex:
         if not is_logout:
-            try:
-                username = typer.prompt("Username")
-                # check if token exist for this username
-                # if token exist, save username in .pax_info
-                token: str = keyring.get_password("pax.express", username=username)
-                if token:
-                    save_username(username)
+            username = typer.prompt("Username")
+            # check if token exist for this username
+            # if token exist, save username in .pax_info
+            token: str = keyring.get_password("pax.express", username=username)
+            if token:
+                save_username(username)
                 return username
-            except PasswordDeleteError:
+            else:
                 print_error("Please login!")
         else:
             print_error("Please login!")
