@@ -2,7 +2,7 @@ from pydantic import BaseSettings
 
 
 class EnvSettings(BaseSettings):
-    API_ENDPOINT: str = "http://0.0.0.0:8000"
+    API_ENDPOINT: str = "https://pax.express"
 
 
 env_settings = EnvSettings()
