@@ -102,7 +102,7 @@ def custom_prompt(**kwargs):
     value = typer.prompt(**kwargs)
     while not re.match(r"^([a-z]|[A-Z]|[0-9]|[-])+$", value, re.I):
         print_error(
-            "all names should be in [a-z]|[A-Z]|[0-9]|[-] format (e.g My-Package) . please try again! "
+            "All names should be in [a-z]|[A-Z]|[0-9]|[-] format (e.g My-Package). Please try again! "
         )
         value = typer.prompt(**kwargs)
     return value
