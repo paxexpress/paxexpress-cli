@@ -15,7 +15,7 @@ from pax_express_client import pydantic_to_prompt
 version_cli = Typer(name="version")
 
 
-@version_cli.command(name="latest", help="get latest version")
+@version_cli.command(name="latest", help="Get latest version")
 def latest(
     subject: str = Option(..., "-s", "--subject"),
     repo: str = Option(..., "-r", "--repo"),
@@ -33,7 +33,7 @@ def latest(
     )
 
 
-@version_cli.command(name="get", help="get a version")
+@version_cli.command(name="get", help="Get a version")
 def get(
     subject: str = Option(..., "-s", "--subject"),
     repo: str = Option(..., "-r", "--repo"),
@@ -56,7 +56,7 @@ def get(
     )
 
 
-@version_cli.command(name="create", help="create a version")
+@version_cli.command(name="create", help="Create a version")
 def create(
     repo: str = Option(..., "-r", "--repo"),
     package: str = Option(..., "-p", "--package"),
@@ -65,7 +65,7 @@ def create(
     create_version(repo=repo, package=package)
 
 
-@version_cli.command(name="delete", help="delete a version")
+@version_cli.command(name="delete", help="Delete a version")
 def delete(
     repo: str = Option(..., "-r", "--repo"),
     package: str = Option(..., "-p", "--package"),
@@ -85,7 +85,7 @@ def delete(
     )
 
 
-@version_cli.command(name="update", help="update a version")
+@version_cli.command(name="update", help="Update a version")
 def update(
     repo: str = Option(..., "-r", "--repo"),
     package: str = Option(..., "-p", "--package"),
@@ -105,7 +105,7 @@ def update(
     )
 
 
-@version_cli.command(name="files_version", help="get a version")
+@version_cli.command(name="files_version", help="Get a version")
 def get_versions_file(
     subject: str = Option(..., "-s", "--subject"),
     repo: str = Option(..., "-r", "--repo"),

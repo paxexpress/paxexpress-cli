@@ -44,7 +44,9 @@ def login(email: str, password: str):
                 "pax.express", modeled_response.username, modeled_response.access_token
             )
             save_username(username=modeled_response.username)
-            print_message("You have successfully logged in \nYour login will expire after 30 Minutes")
+            print_message(
+                "You have successfully logged in \nYour login will expire after 30 Minutes"
+            )
             return
         else:
             print_error(response.text)

@@ -5,7 +5,7 @@ from . import core
 authentication_cli = Typer(name="authentication")
 
 
-@authentication_cli.command(name="register", help="register")
+@authentication_cli.command(name="register", help="Register")
 def register():
     email: str = prompt("Email")
     username: str = custom_prompt(text="Username")
@@ -22,13 +22,13 @@ def register():
             break
 
 
-@authentication_cli.command(name="login", help="login")
+@authentication_cli.command(name="login", help="Login")
 def login():
     email: str = prompt("Email")
     password = prompt("Password", hide_input=True)
     core.login(email=email, password=password)
 
 
-@authentication_cli.command(name="logout", help="logout")
+@authentication_cli.command(name="logout", help="Logout")
 def logout():
     core.logout()

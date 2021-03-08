@@ -14,7 +14,7 @@ from ..authentication.core import get_auth_header_and_username
 file_cli = Typer(name="file")
 
 
-@file_cli.command(name="versions-file", help="get version for file")
+@file_cli.command(name="versions-file", help="Get version for file")
 def versions_file(
     subject: str = Option(..., "-s", "--subject"),
     repo: str = Option(..., "-r", "--repo"),
@@ -34,7 +34,7 @@ def versions_file(
     )
 
 
-@file_cli.command(name="packages-file", help="list all files in a given package")
+@file_cli.command(name="packages-file", help="List all files in a given package")
 def packages_file(
     subject: str = Option(..., "-s", "--subject"),
     repo: str = Option(..., "-r", "--repo"),
@@ -57,7 +57,7 @@ def packages_file(
     )
 
 
-@file_cli.command(name="search", help="search for files")
+@file_cli.command(name="search", help="Search for files")
 def search(
     repo: str = Option(..., "-r", "--repo"),
     subject: str = Option(..., "-s", "--subject"),
@@ -76,7 +76,7 @@ def search(
     )
 
 
-@file_cli.command(name="upload", help="upload file")
+@file_cli.command(name="upload", help="Upload file")
 def upload_file(
     repo: str = Option(..., "-r", "--repo"),
     package: str = Option(..., "-p", "--package"),
@@ -92,7 +92,7 @@ def upload_file(
     )
 
 
-@file_cli.command(name="download", help="download the file")
+@file_cli.command(name="download", help="Download the file")
 def download(
     subject: str = Option(..., "-s", "--subject"),
     repo: str = Option(..., "-r", "--repo"),
