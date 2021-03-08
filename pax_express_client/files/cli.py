@@ -34,7 +34,7 @@ def versions_file(
     )
 
 
-@file_cli.command(name="packages-file", help="get package for file")
+@file_cli.command(name="packages-file", help="Get all files in a given package")
 def packages_file(
     subject: str = Option(..., "-s", "--subject"),
     repo: str = Option(..., "-r", "--repo"),
