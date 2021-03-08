@@ -1,55 +1,15 @@
-# PAX Express
+# PAX Express CLI
+This is a CLI tool for using PAX.express.
+It can be used to manage different things on the PAX.express service.
+Please see the help after installation for further use cases.
 
-# Usage
+Also check out the docs [here](https://github.com/paxexpress/docs)
+## Installation
 
 ```shell
-poetry env use python3.7
-
 poetry shell
 
 poetry install
 
 paxexpress --help
-```
-
-## CLI
-
-### Authentication
->  virtual authentication
-#### login
-```shell
-paxexpress authentication login
-```
-#### logout
-```shell
-paxexpress authentication logout
-```
-
-### Repositories
-#### Get all
-> get all repositories of user
-```shell
-paxexpress repository all 
-```
-#### Get repository by name
-```shell
-paxexpress repository get -r [NAME]
-```
-#### Create a repository
-```shell
-paxexpress repository create -r [NAME]
-```
-#### Update a repository
-```shell
-paxexpress repository update -r [NAME]
-```
-#### Delete a repository
-```shell
-paxexpress repository delete -r [NAME]
-```
-#### Search 
-```shell
-paxexpress repository search -n [NAME] # search by name
-
-paxexpress repository search -d [NAME] # search in descriptions
 ```
