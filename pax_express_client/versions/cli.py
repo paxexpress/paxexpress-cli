@@ -73,7 +73,7 @@ def delete(
     is_operation_confirmed: bool = Option(
         False,
         "-y",
-        help="confirm operation",
+        help="auto confirm operation",
     ),
 ):
 
@@ -93,7 +93,7 @@ def update(
     is_operation_confirmed: bool = Option(
         False,
         "-y",
-        help="confirm operation",
+        help="auto confirm operation",
     ),
 ):
 

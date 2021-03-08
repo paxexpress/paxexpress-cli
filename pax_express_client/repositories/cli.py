@@ -29,7 +29,7 @@ def update(
     is_operation_confirmed: bool = Option(
         False,
         "-y",
-        help="confirm operation",
+        help="auto confirm operation",
     ),
 ):
     update_repo(repo=repo, is_operation_confirmed=is_operation_confirmed)
@@ -41,7 +41,7 @@ def delete(
     is_operation_confirmed: bool = Option(
         False,
         "-y",
-        help="confirm operation",
+        help="auto confirm operation",
     ),
 ):
     delete_repo(repo=repo, is_operation_confirmed=is_operation_confirmed)

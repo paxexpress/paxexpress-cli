@@ -53,7 +53,7 @@ def delete(
     is_operation_confirmed: bool = Option(
         False,
         "-y",
-        help="confirm operation",
+        help="auto confirm operation",
     ),
 ):
     delete_package(
@@ -68,7 +68,7 @@ def update(
     is_operation_confirmed: bool = Option(
         False,
         "-y",
-        help="confirm operation",
+        help="auto confirm operation",
     ),
 ):
     body = pydantic_to_prompt(PackageUpdateBodyModel)
