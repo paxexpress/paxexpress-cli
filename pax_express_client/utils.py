@@ -5,6 +5,7 @@ from pax_express_client import env_settings
 from httpx import Response
 import keyring
 import re
+names_regex = r"^([a-z]|[A-Z]|[0-9]|[-]|[.])+$"
 
 
 def get_url(url: str) -> str:
@@ -100,9 +101,9 @@ def pydantic_to_prompt(model: ClassVar) -> Any:
 
 def custom_prompt(**kwargs):
     value = typer.prompt(**kwargs)
-    while not re.match(r"^([a-z]|[A-Z]|[0-9]|[-])+$", value, re.I):
+    while not re.match(names_regex, value, re.I):
         print_error(
-            "All names should be in [a-z]|[A-Z]|[0-9]|[-] format (e.g My-Package). Please try again! "
+            f"All names should be in {names_regex} format (e.g My-Package). Please try again! "
         )
         value = typer.prompt(**kwargs)
     return value
