@@ -9,8 +9,14 @@ from .models import (
     RepoDeleteResponseModel,
     RepoSearchResponseModel,
 )
-from pax_express_client import get_url, response_handler, pydantic_to_prompt
+from pax_express_client import (
+    get_url,
+    response_handler,
+    pydantic_to_prompt,
+    is_operation_confirm,
+)
 from ..authentication.core import get_auth_header_and_username
+import typer
 
 
 def create_repo():
@@ -35,19 +41,23 @@ def get_repos(subject: str) -> ReposGetResponseModel:
     return response_handler(response=response, return_with_out_model=True)
 
 
-def update_repo(repo: str):
+def update_repo(repo: str, is_operation_confirmed: Optional[bool] = False):
     username, headers = get_auth_header_and_username()
     if not username:
         return
     body = pydantic_to_prompt(model=RepoUpdateBodyModel)
+    if not is_operation_confirmed and not is_operation_confirm():
+        return
     url: str = get_url(f"/repos/{username}/{repo}")
     response = httpx.patch(url=url, json=body.dict(), headers=headers)
     response_handler(response=response)
 
 
-def delete_repo(repo: str):
+def delete_repo(repo: str, is_operation_confirmed: Optional[bool] = False):
     username, headers = get_auth_header_and_username()
     if not username:
+        return
+    if not is_operation_confirmed and not is_operation_confirm():
         return
     url: str = get_url(f"/repo/{username}/{repo}")
     response = httpx.delete(url=url, headers=headers)

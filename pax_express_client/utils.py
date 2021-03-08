@@ -4,6 +4,7 @@ import typer
 from pax_express_client import env_settings
 from httpx import Response
 import keyring
+import re
 
 
 def get_url(url: str) -> str:
@@ -28,8 +29,9 @@ def result_print(result: Union[dict, list, str], is_success: bool, status_code: 
         typer.echo(f" total items: {item_count}")
         mini_line = typer.style(f"{'-' * 20}", fg=typer.colors.YELLOW)
         typer.echo(mini_line)
-    pprint(result)
-    typer.echo(line)
+    if result is not None:
+        pprint(result)
+        typer.echo(line)
 
 
 def response_handler(
@@ -79,7 +81,11 @@ def pydantic_to_prompt(model: ClassVar) -> Any:
                 args.update({"default": example_value})
             else:
                 args.update({"default": ""})
-        value = typer.prompt(**args)
+        if field_info.name == "name":
+            value = custom_prompt(**args)
+        else:
+            value = typer.prompt(**args)
+
         if value == "" and not field_info.required:
             data.update({field_info.name: None})
         else:
@@ -90,3 +96,22 @@ def pydantic_to_prompt(model: ClassVar) -> Any:
                 data.update({field_info.name: value})
 
     return model(**data)
+
+
+def custom_prompt(**kwargs):
+    value = typer.prompt(**kwargs)
+    while not re.match(r"^([a-z]|[A-Z]|[0-9]|[-])+$", value, re.I):
+        print_error(
+            "all names should be in [a-z]|[A-Z]|[0-9]|[-] format (e.g My-Package) . please try again! "
+        )
+        value = typer.prompt(**kwargs)
+    return value
+
+
+def is_operation_confirm() -> bool:
+    value: str = typer.prompt("Are you sure [Y/N]", show_choices=True)
+    if value.lower() in ["y", "yes"]:
+        return True
+    else:
+        print_error("Operation cancelled by user!")
+        return False

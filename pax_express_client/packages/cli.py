@@ -50,17 +50,34 @@ def create(repo: str = Option(..., "-r", "--repo")):
 def delete(
     repo: str = Option(..., "-r", "--repo"),
     package: str = Option(..., "-p", "--package"),
+    is_operation_confirmed: bool = Option(
+        False,
+        "-y",
+        help="confirm operation",
+    ),
 ):
-    delete_package(repo=repo, package=package)
+    delete_package(
+        repo=repo, package=package, is_operation_confirmed=is_operation_confirmed
+    )
 
 
 @package_cli.command(help="Update a package")
 def update(
     repo: str = Option(..., "-r", "--repo"),
     package: str = Option(..., "-p", "--package"),
+    is_operation_confirmed: bool = Option(
+        False,
+        "-y",
+        help="confirm operation",
+    ),
 ):
     body = pydantic_to_prompt(PackageUpdateBodyModel)
-    update_package(body=body, repo=repo, package=package)
+    update_package(
+        body=body,
+        repo=repo,
+        package=package,
+        is_operation_confirmed=is_operation_confirmed,
+    )
 
 
 @package_cli.command(help="Search a package")

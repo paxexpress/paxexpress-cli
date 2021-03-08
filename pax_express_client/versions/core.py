@@ -6,7 +6,12 @@ from .models import (
     VersionUpdateBodyModel,
     VersionGetFileVersionResponseModel,
 )
-from pax_express_client import get_url, response_handler, pydantic_to_prompt
+from pax_express_client import (
+    get_url,
+    response_handler,
+    pydantic_to_prompt,
+    is_operation_confirm,
+)
 from ..authentication.core import get_auth_header_and_username
 
 
@@ -40,20 +45,34 @@ def create_version(repo: str, package: str):
     response_handler(response=response, return_with_out_model=True)
 
 
-def delete_version(repo: str, package: str, version: str):
+def delete_version(
+    repo: str,
+    package: str,
+    version: str,
+    is_operation_confirmed: Optional[bool] = False,
+):
     username, headers = get_auth_header_and_username()
     if not username:
+        return
+    if not is_operation_confirmed and not is_operation_confirm():
         return
     url = get_url(f"/packages/{username}/{repo}/{package}/versions/{version}")
     response = httpx.delete(url=url, headers=headers)
     return response_handler(response=response)
 
 
-def update_version(repo: str, package: str, version: str):
+def update_version(
+    repo: str,
+    package: str,
+    version: str,
+    is_operation_confirmed: Optional[bool] = False,
+):
     username, headers = get_auth_header_and_username()
     if not username:
         return
     body = pydantic_to_prompt(model=VersionUpdateBodyModel)
+    if not is_operation_confirmed and not is_operation_confirm():
+        return
     url = get_url(f"/packages/{username}/{repo}/{package}/versions/{version}")
     response = httpx.patch(url=url, json=body.dict(), headers=headers)
     response_handler(response=response, return_with_out_model=True)

@@ -1,5 +1,5 @@
 from typer import Typer, prompt
-from pax_express_client import print_error
+from pax_express_client import print_error, custom_prompt
 from . import core
 
 authentication_cli = Typer(name="authentication")
@@ -8,7 +8,7 @@ authentication_cli = Typer(name="authentication")
 @authentication_cli.command(name="register", help="register")
 def register():
     email: str = prompt("Email")
-    username: str = prompt("Username")
+    username: str = custom_prompt(text="Username")
     beta_key: str = prompt("Beta_Key")
     for _ in range(3):
         password: str = prompt("Password", hide_input=True)

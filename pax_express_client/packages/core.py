@@ -5,7 +5,12 @@ from .models import (
     PackageDeleteResponseModel,
     PackageUpdateBodyModel,
 )
-from pax_express_client import get_url, response_handler, pydantic_to_prompt
+from pax_express_client import (
+    get_url,
+    response_handler,
+    pydantic_to_prompt,
+    is_operation_confirm,
+)
 import httpx
 from ..authentication.core import get_auth_header_and_username
 
@@ -40,18 +45,29 @@ def create_package(repo: str):
     return response_handler(response=response)
 
 
-def delete_package(repo: str, package: str):
+def delete_package(
+    repo: str, package: str, is_operation_confirmed: Optional[bool] = False
+):
     username, headers = get_auth_header_and_username()
     if not username:
+        return
+    if not is_operation_confirmed and not is_operation_confirm():
         return
     url = get_url(f"/packages/{username}/{repo}/{package}")
     response = httpx.delete(url=url, headers=headers)
     return response_handler(response=response, return_model=PackageDeleteResponseModel)
 
 
-def update_package(body: PackageUpdateBodyModel, repo: str, package: str):
+def update_package(
+    body: PackageUpdateBodyModel,
+    repo: str,
+    package: str,
+    is_operation_confirmed: Optional[bool] = False,
+):
     username, headers = get_auth_header_and_username()
     if not username:
+        return
+    if not is_operation_confirmed and not is_operation_confirm():
         return
     url = get_url(f"/packages/{username}/{repo}/{package}")
     response = httpx.patch(url=url, json=body.dict(), headers=headers)

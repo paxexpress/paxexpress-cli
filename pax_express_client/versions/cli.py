@@ -70,9 +70,19 @@ def delete(
     repo: str = Option(..., "-r", "--repo"),
     package: str = Option(..., "-p", "--package"),
     version: str = Option(..., "-v", "--version"),
+    is_operation_confirmed: bool = Option(
+        False,
+        "-y",
+        help="confirm operation",
+    ),
 ):
 
-    delete_version(repo=repo, package=package, version=version)
+    delete_version(
+        repo=repo,
+        package=package,
+        version=version,
+        is_operation_confirmed=is_operation_confirmed,
+    )
 
 
 @version_cli.command(name="update", help="update a version")
@@ -80,12 +90,18 @@ def update(
     repo: str = Option(..., "-r", "--repo"),
     package: str = Option(..., "-p", "--package"),
     version: str = Option(..., "-v", "--version"),
+    is_operation_confirmed: bool = Option(
+        False,
+        "-y",
+        help="confirm operation",
+    ),
 ):
 
     update_version(
         repo=repo,
         version=version,
         package=package,
+        is_operation_confirmed=is_operation_confirmed,
     )
 
 

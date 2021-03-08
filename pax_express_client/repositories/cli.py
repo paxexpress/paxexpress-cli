@@ -24,13 +24,27 @@ def create():
 
 
 @repo_cli.command(name="update", help="update a repository")
-def update(repo: str = Option(..., "-r", "--repo")):
-    update_repo(repo=repo)
+def update(
+    repo: str = Option(..., "-r", "--repo"),
+    is_operation_confirmed: bool = Option(
+        False,
+        "-y",
+        help="confirm operation",
+    ),
+):
+    update_repo(repo=repo, is_operation_confirmed=is_operation_confirmed)
 
 
 @repo_cli.command(name="delete", help="delete a repository")
-def delete(repo: str = Option(..., "-r", "--repo")):
-    delete_repo(repo=repo)
+def delete(
+    repo: str = Option(..., "-r", "--repo"),
+    is_operation_confirmed: bool = Option(
+        False,
+        "-y",
+        help="confirm operation",
+    ),
+):
+    delete_repo(repo=repo, is_operation_confirmed=is_operation_confirmed)
 
 
 @repo_cli.command(name="search", help="search in repositories")
