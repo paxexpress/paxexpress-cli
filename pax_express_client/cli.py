@@ -1,3 +1,4 @@
+import platform
 import pax_express_client
 from typer import Typer
 from pax_express_client import (
@@ -7,7 +8,24 @@ from pax_express_client import (
     file_cli,
     version_cli,
 )
+import keyring
+from keyring.backends import Windows, OS_X
 
+system = platform.system()
+if system == "Darwin":
+    keyring.set_keyring(OS_X.Keyring())
+elif system == "Windows":
+    try:
+        import win32ctypes
+    except ImportError:
+        print("win32ctypes not found")
+        print("try: \npip install pypiwin32")
+        exit(1)
+
+    keyring.set_keyring(Windows.WinVaultKeyring())
+else:
+    # automate platform detection
+    pass
 cli = Typer()
 
 cli.add_typer(repo_cli, name="repository", help="work with repositories")
@@ -18,6 +36,8 @@ cli.add_typer(file_cli, name="file", help="Work with files")
 
 
 self_cli = Typer(name="self")
+
+
 @self_cli.command(help="Display cli tool version")
 def version():
     print(pax_express_client.__version__)
