@@ -17,9 +17,20 @@ poetry shell
 python -m nuitka --standalone --no-prefer-source-code --linux-onefile-icon 'pax_express_client/icon.png' --include-module typing_extensions --include-package email_validator --onefile --follow-imports $(which paxexpress)
 ```
 
-Will result in a single file named `paxcounter.bin`
+Will result in a single file named `paxexpress.bin`
 
 ### Windows
+```shell
+python.exe -m pip install pypiwin32
+```
+
+```shell
+poetry install
+poetry shell
+for %i in (where paxexpress) do @python.exe -m nuitka --standalone --include-module typing_extensions  --include-package email_validator  --onefile --include-package win32ctypes  --follow-imports --windows-onefile-tempdir --windows-company-name=`company name` --windows-product-version=`version name` %~$PATH:i
+```
+Will result in a single file named `paxexpress.exe`
+
 
 
 ### Mac OS X
