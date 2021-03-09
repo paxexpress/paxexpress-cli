@@ -11,7 +11,7 @@ Also check out the docs [here](https://github.com/paxexpress/docs)
 
 From the [release page](https://github.com/paxexpress/paxexpress-cli/releases) binaries for Linux, MacOS and Windows can be downloaded.
 
-They are single file executabule.
+They are single file executables.
 No installer is provided as of this time.
 
 
