@@ -83,8 +83,15 @@ def file_upload(repo: str, package: str, version: str, filename: str):
         print_error(f"{e.args[0]}")
 
 
-def file_download(subject: str, repo: str, file_name: str, path_to_save: str):
-    url = get_url(f"/{subject}/{repo}/storage/{file_name}")
+def file_download(
+    subject: str,
+    repo: str,
+    package: str,
+    version: str,
+    file_name: str,
+    path_to_save: str,
+):
+    url = get_url(f"/{subject}/{repo}/{package}/{version}/{file_name}")
     response = httpx.get(url=url)
     if response.status_code == 200:
         path = os.path.join(path_to_save, file_name)

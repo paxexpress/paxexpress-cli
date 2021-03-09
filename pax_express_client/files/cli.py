@@ -96,8 +96,10 @@ def upload_file(
 def download(
     subject: str = Option(..., "-s", "--subject"),
     repo: str = Option(..., "-r", "--repo"),
+    package: str = Option(..., "-p", "--package"),
+    version: str = Option(..., "-v", "--version"),
     filename: str = Option(..., "-f", "--filename"),
-    path_to_save: str = Option(..., "-p", "--path-to-save"),
+    path_to_save: str = Option(..., "-P", "--path-to-save"),
 ):
 
     file_download(
@@ -105,4 +107,6 @@ def download(
         repo=repo,
         file_name=filename,
         path_to_save=path_to_save,
+        version=version,
+        package=package,
     )
