@@ -99,7 +99,7 @@ def download(
     package: str = Option(..., "-p", "--package"),
     version: str = Option(..., "-v", "--version"),
     filename: str = Option(..., "-f", "--filename"),
-    path_to_save: str = Option(..., "-P", "--path-to-save"),
+    path_to_save: str = Option(..., "-o", "--output-path"),
 ):
 
     file_download(
