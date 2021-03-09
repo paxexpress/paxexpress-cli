@@ -7,6 +7,13 @@ Also check out the docs [here](https://github.com/paxexpress/docs)
 
 ## Installation
 
+### Precompiled
+
+From the [release page](https://github.com/paxexpress/paxexpress-cli/releases) binaries for Linux, MacOS and Windows can be downloaded.
+
+They are single file executabule.
+No installer is provided as of this time.
+
 
 ### from source
 
