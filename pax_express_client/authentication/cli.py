@@ -1,4 +1,3 @@
-# from typer import Typer, prompt
 import typer
 from pax_express_client import print_error, custom_prompt
 from . import core
