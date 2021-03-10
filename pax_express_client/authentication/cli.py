@@ -29,7 +29,7 @@ def logout():
 
 @authentication_cli.command(name="change-password", help="change the password")
 def change_password():
-    password = typer.prompt("Password", hide_input=True)
+    password = typer.prompt("Current password", hide_input=True)
     new_password: str = typer.prompt(
         "New password", hide_input=True, confirmation_prompt=True
     )
