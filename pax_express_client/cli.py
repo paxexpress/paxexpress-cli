@@ -8,13 +8,18 @@ from pax_express_client import (
     file_cli,
     version_cli,
 )
-import keyring
-from keyring.backends import Windows, OS_X
+
 
 system = platform.system()
+if system in ["Darwin", "Windows"]:
+    from keyring import set_keyring
 if system == "Darwin":
-    keyring.set_keyring(OS_X.Keyring())
+    from keyring.backends import OS_X
+
+    set_keyring(OS_X.Keyring())
 elif system == "Windows":
+    from keyring.backends import Windows
+
     try:
         import win32ctypes
     except ImportError:
@@ -22,7 +27,7 @@ elif system == "Windows":
         print("try: \npip install pypiwin32")
         exit(1)
 
-    keyring.set_keyring(Windows.WinVaultKeyring())
+    set_keyring(Windows.WinVaultKeyring())
 else:
     # automate platform detection
     pass
