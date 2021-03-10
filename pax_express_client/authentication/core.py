@@ -9,6 +9,8 @@ from .models import (
     UserRegisterBodyModel,
     UserRegisterResponseModel,
     UserLoginResponseModel,
+    UserUpdatePasswordBodyModel,
+    UserUpdatePasswordResponseModel,
 )
 from pax_express_client import print_error, print_message, get_url, response_handler
 import httpx
@@ -109,3 +111,16 @@ def get_auth_header_and_username() -> Optional[Tuple[Optional[str], Optional[dic
         return username, {"Authorization": f"Bearer {token}"}
     print_error("Please login!")
     return None, None
+
+
+def change_password(current_password: str, new_password: str):
+    username, headers = get_auth_header_and_username()
+    if not username:
+        return
+    url = get_url(f"/user/profile/security/change-password")
+    response = httpx.put(
+        url=url,
+        auth=httpx.BasicAuth(username=username, password=current_password),
+        json=UserUpdatePasswordBodyModel(new_password=new_password).dict(),
+    )
+    response_handler(response=response, return_model=UserUpdatePasswordResponseModel)

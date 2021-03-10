@@ -60,3 +60,11 @@ class UserLoginResponseModel(BaseModel):
                 "username": "greyrook",
             }
         }
+
+
+class UserUpdatePasswordBodyModel(BaseModel):
+    new_password: str
+
+
+class UserUpdatePasswordResponseModel(GenericResponseModel):
+    pass
