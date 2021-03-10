@@ -30,3 +30,9 @@ Will result in a single file named `paxexpress.exe`
 
 
 ### Mac OS X
+```shell
+poetry install
+poetry shell
+python -m nuitka --follow-imports $(which paxexpress)
+```
+Will result in a single file named `paxexpress.bin`
