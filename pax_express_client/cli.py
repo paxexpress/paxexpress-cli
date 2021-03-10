@@ -18,6 +18,8 @@ cli.add_typer(file_cli, name="file", help="Work with files")
 
 
 self_cli = Typer(name="self")
+
+
 @self_cli.command(help="Display cli tool version")
 def version():
     print(pax_express_client.__version__)

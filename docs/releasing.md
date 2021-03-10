@@ -21,10 +21,6 @@ Will result in a single file named `paxexpress.bin`
 
 ### Windows
 ```shell
-python.exe -m pip install pypiwin32
-```
-
-```shell
 poetry install
 poetry shell
 for %i in (where paxexpress) do @python.exe -m nuitka --standalone --include-module typing_extensions  --include-package email_validator  --onefile --include-package win32ctypes  --follow-imports --windows-onefile-tempdir --windows-company-name=`company name` --windows-product-version=`version name` %~$PATH:i
