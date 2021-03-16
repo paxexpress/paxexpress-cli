@@ -43,3 +43,7 @@ class UploadFileHeaderModel(BaseModel):
     x_bintray_publish: str = Field(alias="x-bintray-publish")
     x_bintray_override: str = Field(alias="x-bintray-override")
     content_type: str = Field(alias="content-type")
+
+
+class FileDeleteResponseModel(BaseModel):
+    message: str = "success"
