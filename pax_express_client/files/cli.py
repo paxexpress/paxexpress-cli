@@ -6,10 +6,10 @@ from .core import (
     files_search,
     file_upload,
     file_download,
+    delete_file,
 )
 
 from ..authentication.core import get_auth_header_and_username
-
 
 file_cli = Typer(name="file")
 
@@ -47,7 +47,6 @@ def packages_file(
         help="include unpublished files",
     ),
 ):
-
     get_package_file(
         subject=subject,
         package=package,
@@ -83,7 +82,6 @@ def upload_file(
     version: str = Option(..., "-v", "--version"),
     filename: str = Option(..., "-f", "--filename"),
 ):
-
     file_upload(
         repo=repo,
         package=package,
@@ -101,7 +99,6 @@ def download(
     filename: str = Option(..., "-f", "--filename"),
     path_to_save: str = Option(..., "-o", "--output-path"),
 ):
-
     file_download(
         subject=subject,
         repo=repo,
@@ -110,3 +107,13 @@ def download(
         version=version,
         package=package,
     )
+
+
+@file_cli.command(name="delete", help="Delete a file")
+def delete(
+    repo: str = Option(..., "-r", "--repo"),
+    package: str = Option(..., "-p", "--package"),
+    version: str = Option(..., "-v", "--version"),
+    filename: str = Option(..., "-f", "--filename"),
+):
+    delete_file(repo=repo, package=package, version=version, filename=filename)

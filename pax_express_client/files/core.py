@@ -6,6 +6,7 @@ from pax_express_client import (
     print_message,
     get_auth_header_and_username,
 )
+from .models import FileDeleteResponseModel
 import httpx
 from pax_express_client import print_error
 import os
@@ -100,3 +101,15 @@ def file_download(
         print_message(f"file saved to {path}")
     else:
         print_error(response.text)
+
+
+def delete_file(repo: str, package: str, version: str, filename: str):
+    username, header = get_auth_header_and_username()
+    if not username:
+        return
+    url = get_url(f"/{username}/{repo}/{package}/{version}/{filename}")
+    password = typer.prompt("Password", hide_input=True)
+    response = httpx.delete(
+        url=url, auth=httpx.BasicAuth(username=username, password=password)
+    )
+    response_handler(response=response, return_model=FileDeleteResponseModel)
