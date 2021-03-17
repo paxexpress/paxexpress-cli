@@ -113,7 +113,7 @@ def download(
 def delete(
     repo: str = Option(..., "-r", "--repo"),
     package: str = Option(..., "-p", "--package"),
-    version: str = Option(..., "-v", "--version"),
-    filename: str = Option(..., "-f", "--filename"),
+    version: Optional[str] = Option(None, "-v", "--version"),
+    filename: Optional[str] = Option(None, "-f", "--filename"),
 ):
     delete_file(repo=repo, package=package, version=version, filename=filename)

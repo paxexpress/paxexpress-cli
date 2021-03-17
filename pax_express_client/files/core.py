@@ -11,16 +11,24 @@ import httpx
 from pax_express_client import print_error
 import os
 import typer
+import inquirer
 
 
 def get_versions_file(
-    subject: str, repo: str, package: str, include_unpublished: Optional[int] = None
+    subject: str,
+    repo: str,
+    package: str,
+    include_unpublished: Optional[int] = None,
+    is_internal_call: bool = False,
 ):
     url = get_url(f"/packages/{subject}/{repo}/{package}/files")
     params = {}
     params.update({"include_unpublished": include_unpublished})
     response = httpx.get(url=url, params=params)
-    response_handler(response=response, return_with_out_model=True)
+    if not is_internal_call:
+        response_handler(response=response, return_with_out_model=True)
+    else:
+        return response.json()
 
 
 def get_package_file(
@@ -103,13 +111,48 @@ def file_download(
         print_error(response.text)
 
 
-def delete_file(repo: str, package: str, version: str, filename: str):
+def delete_file(
+    repo: str, package: str, version: Optional[str], filename: Optional[str]
+):
     username, header = get_auth_header_and_username()
     if not username:
         return
-    url = get_url(f"/{username}/{repo}/{package}/{version}/{filename}")
-    password = typer.prompt("Password", hide_input=True)
-    response = httpx.delete(
-        url=url, auth=httpx.BasicAuth(username=username, password=password)
-    )
-    response_handler(response=response, return_model=FileDeleteResponseModel)
+
+    if version and filename:
+        url = get_url(f"/{username}/{repo}/{package}/{version}/{filename}")
+        password = typer.prompt("Password", hide_input=True)
+        response = httpx.delete(
+            url=url, auth=httpx.BasicAuth(username=username, password=password)
+        )
+        response_handler(response=response, return_model=FileDeleteResponseModel)
+    if not version and not filename:
+        files = get_versions_file(
+            subject=username,
+            package=package,
+            repo=repo,
+            include_unpublished=1,
+            is_internal_call=True,
+        )
+        if not files:
+            print_error("No files have been uploaded!")
+            return
+        questions = [
+            inquirer.List(
+                "file",
+                message="Select the file",
+                choices=[
+                    {"version": item["version"], "name": item["name"]}
+                    for item in files
+                ],
+            ),
+        ]
+        answers = inquirer.prompt(questions)
+        if not answers:
+            return
+        typer.echo(f"Deleting  {answers}")
+        delete_file(
+            repo=repo,
+            package=package,
+            version=answers["file"]["version"],
+            filename=answers["file"]["name"],
+        )
