@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 import httpx
 from .models import (
     RepoCreateBodyModel,
@@ -14,9 +14,25 @@ from pax_express_client import (
     response_handler,
     pydantic_to_prompt,
     is_operation_confirm,
+    select_available_options,
+    print_error,
 )
 from ..authentication.core import get_auth_header_and_username
-import typer
+
+
+def select_from_available_repo(subject: str) -> str:
+    repos = get_repos(subject=subject, is_internal_call=True)
+    if not repos:
+        print_error("No repository has been created!")
+        exit(1)
+    repo = select_available_options(
+        name="repo",
+        choices=[item["name"] for item in repos],
+        message="Select the repository",
+    )
+    if not repo:
+        exit(1)
+    return repo["repo"]
 
 
 def create_repo():
@@ -29,16 +45,22 @@ def create_repo():
     response_handler(response, RepoCreateResponseModel)
 
 
-def get_repo(subject: str, repo: str) -> RepoModel:
+def get_repo(subject: str, repo: Optional[str]) -> RepoModel:
+    if not repo:
+        repo = select_from_available_repo(subject=subject)
     url: str = get_url(f"/repos/{subject}/{repo}")
     response = httpx.get(url=url)
     return response_handler(response, RepoModel)
 
 
-def get_repos(subject: str) -> ReposGetResponseModel:
+def get_repos(subject: str, is_internal_call: bool = False) -> dict:
     url: str = get_url(f"/repos/{subject}")
     response = httpx.get(url=url)
-    return response_handler(response=response, return_with_out_model=True)
+
+    if not is_internal_call:
+        response_handler(response=response, return_with_out_model=True)
+        exit(0)
+    return response.json()
 
 
 def update_repo(repo: str, is_operation_confirmed: Optional[bool] = False):

@@ -10,14 +10,44 @@ from pax_express_client import (
     response_handler,
     pydantic_to_prompt,
     is_operation_confirm,
+    print_error,
+    select_available_options,
 )
 import httpx
 from ..authentication.core import get_auth_header_and_username
+from ..repositories import core as repositories_core
+
+
+def select_from_available_packages(subject: str, repo: str):
+    packages = get_all_packages(
+        subject=subject,
+        repo=repo,
+        is_internal_call=True,
+        start_pos=None,
+        start_name=None,
+    )
+    if not packages:
+        print_error("No packages has been created!")
+        exit(1)
+    package = select_available_options(
+        name="package",
+        choices=[package["name"] for package in packages],
+        message="Select the package",
+    )
+    if not package:
+        exit(1)
+    return package["package"]
 
 
 def get_all_packages(
-    subject: str, repo: str, start_pos: Optional[int], start_name: Optional[str]
+    subject: str,
+    repo: Optional[str],
+    start_pos: Optional[int],
+    start_name: Optional[str],
+    is_internal_call: bool = False,
 ):
+    if not repo:
+        repo = repositories_core.select_from_available_repo(subject=subject)
     url = get_url(f"/repos/{subject}/{repo}/packages")
     params = {}
     if start_name:
@@ -25,10 +55,20 @@ def get_all_packages(
     if start_pos:
         params.update({"start_pos": start_pos})
     response = httpx.get(url=url, params=params)
-    return response_handler(response=response, return_with_out_model=True)
+    if not is_internal_call:
+        response_handler(response=response, return_with_out_model=True)
+        exit(0)
+    return response.json()
 
 
-def get_package(subject: str, package: str, repo: str, attribute_values: int):
+def get_package(
+    subject: str, package: Optional[str], repo: Optional[str], attribute_values: int
+):
+    if not repo:
+        repo = repositories_core.select_from_available_repo(subject=subject)
+    if not package:
+        package = select_from_available_packages(subject=subject, repo=repo)
+
     url = get_url(f"/packages/{subject}/{repo}/{package}")
     params = {"attribute_values": attribute_values}
     response = httpx.get(url=url, params=params)
@@ -46,29 +86,41 @@ def create_package(repo: str):
 
 
 def delete_package(
-    repo: str, package: str, is_operation_confirmed: Optional[bool] = False
+    repo: Optional[str],
+    package: Optional[str],
+    is_operation_confirmed: Optional[bool] = False,
 ):
     username, headers = get_auth_header_and_username()
     if not username:
-        return
+        exit(1)
+    if not repo:
+        repo = repositories_core.select_from_available_repo(subject=username)
+    if not package:
+        package = select_from_available_packages(subject=username, repo=repo)
     if not is_operation_confirmed and not is_operation_confirm():
-        return
+        exit(1)
+
     url = get_url(f"/packages/{username}/{repo}/{package}")
     response = httpx.delete(url=url, headers=headers)
     return response_handler(response=response, return_model=PackageDeleteResponseModel)
 
 
 def update_package(
-    body: PackageUpdateBodyModel,
-    repo: str,
-    package: str,
+    repo: Optional[str],
+    package: Optional[str],
     is_operation_confirmed: Optional[bool] = False,
 ):
     username, headers = get_auth_header_and_username()
     if not username:
-        return
+        exit(1)
+    if not repo:
+        repo = repositories_core.select_from_available_repo(subject=username)
+    if not package:
+        package = select_from_available_packages(subject=username, repo=repo)
+    body = pydantic_to_prompt(PackageUpdateBodyModel)
     if not is_operation_confirmed and not is_operation_confirm():
-        return
+        exit(1)
+
     url = get_url(f"/packages/{username}/{repo}/{package}")
     response = httpx.patch(url=url, json=body.dict(), headers=headers)
     response_handler(response=response)
@@ -98,7 +150,9 @@ def maven_search():
     raise NotImplementedError()
 
 
-def package_for_file(subject: str, repo: str, file_path: str):
+def package_for_file(subject: str, repo: Optional[str], file_path: str):
+    if not repo:
+        repo = repositories_core.select_from_available_repo(subject=subject)
     url = get_url(f"/file-package/{subject}/{repo}/{file_path}")
     response = httpx.get(url=url)
     return response_handler(response=response, return_model=PackageModel)

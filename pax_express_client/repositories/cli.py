@@ -13,7 +13,7 @@ def get_all(subject: str = Option(..., "-s", "--subject")):
 @repo_cli.command(name="get", help="Get a repository")
 def get(
     subject: str = Option(..., "-s", "--subject"),
-    repo: str = Option(..., "-r", "--repo"),
+    repo: str = Option(None, "-r", "--repo"),
 ):
     get_repo(subject=subject, repo=repo)
 

@@ -9,7 +9,7 @@ package_cli = Typer(name="package")
 @package_cli.command(help="Get all packages")
 def get_all(
     subject: str = Option(..., "-s", "--subject"),
-    repo: str = Option(..., "-r", "--repo"),
+    repo: str = Option(None, "-r", "--repo"),
     start_pos: Optional[str] = Option(None, "--start-pos"),
     start_name: Optional[str] = Option(None, "--start-name"),
 ):
@@ -24,8 +24,8 @@ def get_all(
 @package_cli.command(help="Get a package")
 def get(
     subject: str = Option(..., "-s", "--subject"),
-    repo: str = Option(..., "-r", "--repo"),
-    package: str = Option(..., "-p", "--package"),
+    repo: str = Option(None, "-r", "--repo"),
+    package: str = Option(None, "-p", "--package"),
     attribute_values: bool = Option(
         False,
         "-av",
@@ -48,8 +48,8 @@ def create(repo: str = Option(..., "-r", "--repo")):
 
 @package_cli.command(help="Delete a package")
 def delete(
-    repo: str = Option(..., "-r", "--repo"),
-    package: str = Option(..., "-p", "--package"),
+    repo: str = Option(None, "-r", "--repo"),
+    package: str = Option(None, "-p", "--package"),
     is_operation_confirmed: bool = Option(
         False,
         "-y",
@@ -63,17 +63,15 @@ def delete(
 
 @package_cli.command(help="Update a package")
 def update(
-    repo: str = Option(..., "-r", "--repo"),
-    package: str = Option(..., "-p", "--package"),
+    repo: str = Option(None, "-r", "--repo"),
+    package: str = Option(None, "-p", "--package"),
     is_operation_confirmed: bool = Option(
         False,
         "-y",
         help="auto confirm operation",
     ),
 ):
-    body = pydantic_to_prompt(PackageUpdateBodyModel)
     update_package(
-        body=body,
         repo=repo,
         package=package,
         is_operation_confirmed=is_operation_confirmed,
@@ -93,7 +91,7 @@ def search(
 @package_cli.command(name="package_for_file", help="Get a file's package")
 def get_package_for_file(
     subject: str = Option(..., "-s", "--subject"),
-    repo: str = Option(..., "-r", "--repo"),
+    repo: str = Option(None, "-r", "--repo"),
     file_path: str = Option(..., "-f", "--file-path"),
 ):
     package_for_file(subject=subject, repo=repo, file_path=file_path)
