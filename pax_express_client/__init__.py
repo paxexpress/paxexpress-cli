@@ -7,6 +7,7 @@ from .utils import (
     pydantic_to_prompt,
     is_operation_confirm,
     custom_prompt,
+    select_available_options,
 )
 from .repositories.cli import repo_cli
 from .authentication.cli import authentication_cli
