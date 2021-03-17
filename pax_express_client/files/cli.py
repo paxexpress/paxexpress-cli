@@ -9,7 +9,6 @@ from .core import (
     delete_file,
 )
 
-from ..authentication.core import get_auth_header_and_username
 
 file_cli = Typer(name="file")
 
@@ -95,8 +94,8 @@ def download(
     subject: str = Option(..., "-s", "--subject"),
     repo: str = Option(..., "-r", "--repo"),
     package: str = Option(..., "-p", "--package"),
-    version: str = Option(..., "-v", "--version"),
-    filename: str = Option(..., "-f", "--filename"),
+    version: str = Option(None, "-v", "--version"),
+    filename: str = Option(None, "-f", "--filename"),
     path_to_save: str = Option(..., "-o", "--output-path"),
 ):
     file_download(
