@@ -12,8 +12,6 @@ import httpx
 from pax_express_client import print_error
 import os
 import typer
-import inquirer
-from pax_express_client.versions import core as versions_core
 
 
 def get_versions_file(
@@ -117,96 +115,75 @@ def file_download(
         print_error(response.text)
 
 
+def select_from_available_versions(
+    subject: str, repo: str, package: str, filename: Optional[str]
+) -> Optional[str]:
+    files = get_versions_file(
+        subject=subject,
+        package=package,
+        repo=repo,
+        include_unpublished=1,
+        is_internal_call=True,
+    )
+    if not files:
+        print_error("No versions have been created!")
+        exit(1)
+    selected_version = select_available_options(
+        name="version",
+        message="Select the version",
+        choices=[item["version"] for item in files]
+        if not filename
+        else [item["version"] for item in files if item["name"] == filename],
+    )
+    if not selected_version:
+        print_error("No version has been selected!")
+        exit(1)
+    return selected_version["version"]
+
+
+def select_from_available_files(subject: str, repo: str, package: str, version: str):
+    files = get_package_file(
+        subject=subject,
+        repo=repo,
+        package=package,
+        version=version,
+        include_unpublished=1,
+        is_internal_call=True,
+    )
+    if not files:
+        print_error("No files have been uploaded!")
+        exit(1)
+    selected_file = select_available_options(
+        name="file",
+        message="Select the file",
+        choices=[item["name"] for item in files if item["version"] == version],
+    )
+    if not selected_file:
+        print_error("No file has been selected!")
+        exit(1)
+    return selected_file["file"]
+
+
 def delete_file(
     repo: str, package: str, version: Optional[str], filename: Optional[str]
 ):
     username, header = get_auth_header_and_username()
     if not username:
         return
+    if not version:
+        version = select_from_available_versions(
+            subject=username, repo=repo, package=package, filename=filename
+        )
 
-    if version and filename:
-        url = get_url(f"/{username}/{repo}/{package}/{version}/{filename}")
-        password = typer.prompt("Password", hide_input=True)
-        response = httpx.delete(
-            url=url, auth=httpx.BasicAuth(username=username, password=password)
+    if not filename:
+        filename = select_from_available_files(
+            subject=username, repo=repo, package=package, version=version
         )
-        response_handler(response=response, return_model=FileDeleteResponseModel)
-        return
-    file_to_delete = {"file": None, "version": None}
-
-    if version and not filename:
-        files = get_package_file(
-            subject=username,
-            repo=repo,
-            package=package,
-            version=version,
-            include_unpublished=1,
-            is_internal_call=True,
-        )
-        if not files:
-            print_error("No files have been uploaded!")
-            return
-        selected_file = select_available_options(
-            name="file",
-            message="Select the file",
-            choices=[
-                {"version": item["version"], "name": item["name"]} for item in files
-            ],
-        )
-        if not selected_file:
-            return
-        file_to_delete["file"] = selected_file["file"]["name"]
-        file_to_delete["version"] = selected_file["file"]["version"]
-
-    if not version and filename:
-        files = get_versions_file(
-            subject=username,
-            package=package,
-            repo=repo,
-            include_unpublished=1,
-            is_internal_call=True,
-        )
-        selected_file = select_available_options(
-            name="file",
-            message="Select the file",
-            choices=[
-                {"version": item["version"], "name": item["name"]}
-                for item in files
-                if item["name"] == filename
-            ],
-        )
-        if not selected_file:
-            return
-        file_to_delete["file"] = filename
-        file_to_delete["version"] = selected_file["file"]["version"]
-
-    if not version and not filename:
-        files = get_versions_file(
-            subject=username,
-            package=package,
-            repo=repo,
-            include_unpublished=1,
-            is_internal_call=True,
-        )
-        if not files:
-            print_error("No files have been uploaded!")
-            return
-        selected_file = select_available_options(
-            name="file",
-            message="Select the file",
-            choices=[
-                {"version": item["version"], "name": item["name"]} for item in files
-            ],
-        )
-        if not selected_file:
-            return
-        file_to_delete["file"] = selected_file["file"]["name"]
-        file_to_delete["version"] = selected_file["file"]["version"]
-    typer.echo(f"Deleting  {file_to_delete}")
-    delete_file(
-        repo=repo,
-        package=package,
-        version=file_to_delete["version"],
-        filename=file_to_delete["file"],
+    print_message(f"Deleting file {filename} version {version}")
+    url = get_url(f"/{username}/{repo}/{package}/{version}/{filename}")
+    password = typer.prompt("Password", hide_input=True)
+    response = httpx.delete(
+        url=url, auth=httpx.BasicAuth(username=username, password=password)
     )
+    response_handler(response=response, return_model=FileDeleteResponseModel)
     return
