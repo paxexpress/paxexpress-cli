@@ -1,10 +1,11 @@
-from typing import Optional
+from typing import Optional, Any
 import datetime
 from pax_express_client import (
     get_url,
     response_handler,
     print_message,
     get_auth_header_and_username,
+    select_available_options,
 )
 from .models import FileDeleteResponseModel
 import httpx
@@ -12,6 +13,7 @@ from pax_express_client import print_error
 import os
 import typer
 import inquirer
+from pax_express_client.versions import core as versions_core
 
 
 def get_versions_file(
@@ -37,12 +39,16 @@ def get_package_file(
     package: str,
     version: str,
     include_unpublished: int,
+    is_internal_call: bool = False,
 ):
     url = get_url(f"/packages/{subject}/{repo}/{package}/versions/{version}/files")
     params = {}
     params.update({"include_unpublished": include_unpublished})
     response = httpx.get(url=url, params=params)
-    response_handler(response=response, return_with_out_model=True)
+    if not is_internal_call:
+        response_handler(response=response, return_with_out_model=True)
+    else:
+        return response.json()
 
 
 def files_search(
@@ -125,6 +131,55 @@ def delete_file(
             url=url, auth=httpx.BasicAuth(username=username, password=password)
         )
         response_handler(response=response, return_model=FileDeleteResponseModel)
+        return
+    file_to_delete = {"file": None, "version": None}
+
+    if version and not filename:
+        files = get_package_file(
+            subject=username,
+            repo=repo,
+            package=package,
+            version=version,
+            include_unpublished=1,
+            is_internal_call=True,
+        )
+        if not files:
+            print_error("No files have been uploaded!")
+            return
+        selected_file = select_available_options(
+            name="file",
+            message="Select the file",
+            choices=[
+                {"version": item["version"], "name": item["name"]} for item in files
+            ],
+        )
+        if not selected_file:
+            return
+        file_to_delete["file"] = selected_file["file"]["name"]
+        file_to_delete["version"] = selected_file["file"]["version"]
+
+    if not version and filename:
+        files = get_versions_file(
+            subject=username,
+            package=package,
+            repo=repo,
+            include_unpublished=1,
+            is_internal_call=True,
+        )
+        selected_file = select_available_options(
+            name="file",
+            message="Select the file",
+            choices=[
+                {"version": item["version"], "name": item["name"]}
+                for item in files
+                if item["name"] == filename
+            ],
+        )
+        if not selected_file:
+            return
+        file_to_delete["file"] = filename
+        file_to_delete["version"] = selected_file["file"]["version"]
+
     if not version and not filename:
         files = get_versions_file(
             subject=username,
@@ -136,23 +191,22 @@ def delete_file(
         if not files:
             print_error("No files have been uploaded!")
             return
-        questions = [
-            inquirer.List(
-                "file",
-                message="Select the file",
-                choices=[
-                    {"version": item["version"], "name": item["name"]}
-                    for item in files
-                ],
-            ),
-        ]
-        answers = inquirer.prompt(questions)
-        if not answers:
-            return
-        typer.echo(f"Deleting  {answers}")
-        delete_file(
-            repo=repo,
-            package=package,
-            version=answers["file"]["version"],
-            filename=answers["file"]["name"],
+        selected_file = select_available_options(
+            name="file",
+            message="Select the file",
+            choices=[
+                {"version": item["version"], "name": item["name"]} for item in files
+            ],
         )
+        if not selected_file:
+            return
+        file_to_delete["file"] = selected_file["file"]["name"]
+        file_to_delete["version"] = selected_file["file"]["version"]
+    typer.echo(f"Deleting  {file_to_delete}")
+    delete_file(
+        repo=repo,
+        package=package,
+        version=file_to_delete["version"],
+        filename=file_to_delete["file"],
+    )
+    return

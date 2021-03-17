@@ -1,5 +1,7 @@
 from typing import Any, ClassVar, Optional, Callable, Union, List
 from pprint import pprint
+
+import inquirer
 import typer
 from pax_express_client import env_settings
 from httpx import Response
@@ -117,3 +119,15 @@ def is_operation_confirm() -> bool:
     else:
         print_error("Operation cancelled by user!")
         return False
+
+
+def select_available_options(name: str, message: str, choices: list) -> Any:
+    questions = [
+        inquirer.List(
+            name=name,
+            message=message,
+            choices=choices,
+        ),
+    ]
+    answers = inquirer.prompt(questions)
+    return answers
