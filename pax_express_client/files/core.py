@@ -100,10 +100,19 @@ def file_download(
     subject: str,
     repo: str,
     package: str,
-    version: str,
-    file_name: str,
+    version: Optional[str],
+    file_name: Optional[str],
     path_to_save: str,
 ):
+    if not version:
+        version = select_from_available_versions(
+            subject=subject, repo=repo, package=package, filename=file_name
+        )
+
+    if not file_name:
+        file_name = select_from_available_files(
+            subject=subject, repo=repo, package=package, version=version
+        )
     url = get_url(f"/{subject}/{repo}/{package}/{version}/{file_name}")
     response = httpx.get(url=url)
     if response.status_code == 200:
