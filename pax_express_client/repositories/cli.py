@@ -1,6 +1,5 @@
 from typer import Typer, Option
 from .core import *
-from pax_express_client import pydantic_to_prompt
 
 repo_cli = Typer(name="repository")
 
@@ -25,7 +24,7 @@ def create():
 
 @repo_cli.command(name="update", help="Update a repository")
 def update(
-    repo: str = Option(..., "-r", "--repo"),
+    repo: str = Option(None, "-r", "--repo"),
     is_operation_confirmed: bool = Option(
         False,
         "-y",
@@ -37,7 +36,7 @@ def update(
 
 @repo_cli.command(name="delete", help="Delete a repository")
 def delete(
-    repo: str = Option(..., "-r", "--repo"),
+    repo: str = Option(None, "-r", "--repo"),
     is_operation_confirmed: bool = Option(
         False,
         "-y",

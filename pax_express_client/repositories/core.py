@@ -63,10 +63,12 @@ def get_repos(subject: str, is_internal_call: bool = False) -> dict:
     return response.json()
 
 
-def update_repo(repo: str, is_operation_confirmed: Optional[bool] = False):
+def update_repo(repo: Optional[str], is_operation_confirmed: Optional[bool] = False):
     username, headers = get_auth_header_and_username()
     if not username:
         return
+    if not repo:
+        repo = select_from_available_repo(subject=username)
     body = pydantic_to_prompt(model=RepoUpdateBodyModel)
     if not is_operation_confirmed and not is_operation_confirm():
         return
@@ -75,10 +77,12 @@ def update_repo(repo: str, is_operation_confirmed: Optional[bool] = False):
     response_handler(response=response)
 
 
-def delete_repo(repo: str, is_operation_confirmed: Optional[bool] = False):
+def delete_repo(repo: Optional[str], is_operation_confirmed: Optional[bool] = False):
     username, headers = get_auth_header_and_username()
     if not username:
         return
+    if not repo:
+        repo = select_from_available_repo(subject=username)
     if not is_operation_confirmed and not is_operation_confirm():
         return
     url: str = get_url(f"/repo/{username}/{repo}")
