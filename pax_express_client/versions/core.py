@@ -11,13 +11,37 @@ from pax_express_client import (
     response_handler,
     pydantic_to_prompt,
     is_operation_confirm,
+    select_available_options,
+    print_error,
 )
 from ..authentication.core import get_auth_header_and_username
+from pax_express_client.repositories import core as repositories_core
+from pax_express_client.packages import core as packages_core
+from pax_express_client.files import core as files_core
+
+# def select_from_available_versions(subject:str,repo:str,package:str):
+#     versions = files_core.get_versions_file(subject=subject,repo=repo,package=package,is_internal_call=True)
+#     if not versions:
+#         print_error("No version has been created!")
+#         exit(1)
+#     version = select_available_options(name='version',message="Select Version",choices=[item['version'] for item in versions])
+#     if not version:
+#         print_error("No version has been selected")
+#         exit(1)
 
 
 def get_latest(
-    subject: str, repo: str, package: str, attribute_values: Optional[str] = None
+    subject: str,
+    repo: Optional[str],
+    package: Optional[str],
+    attribute_values: Optional[str] = None,
 ):
+    if not repo:
+        repo = repositories_core.select_from_available_repo(subject=subject)
+    if not package:
+        package = packages_core.select_from_available_packages(
+            subject=subject, repo=repo
+        )
     url = get_url(f"/packages/{subject}/{repo}/{package}/versions/_latest")
     params = {}
     if attribute_values:
@@ -27,18 +51,38 @@ def get_latest(
 
 
 def get_version(
-    subject: str, repo: str, package: str, version: str, attribute_values: int
+    subject: str,
+    repo: Optional[str],
+    package: Optional[str],
+    version: Optional[str],
+    attribute_values: int,
 ):
+    if not repo:
+        repo = repositories_core.select_from_available_repo(subject=subject)
+    if not package:
+        package = packages_core.select_from_available_packages(
+            subject=subject, repo=repo
+        )
+    if not version:
+        version = files_core.select_from_available_versions(
+            subject=subject, repo=repo, package=package, filename=None
+        )
     url = get_url(f"/packages/{subject}/{repo}/{package}/versions/{version}")
     params = {"attribute_values": attribute_values}
     response = httpx.get(url=url, params=params)
     return response_handler(response=response, return_model=VersionModel)
 
 
-def create_version(repo: str, package: str):
+def create_version(repo: Optional[str], package: Optional[str]):
     username, headers = get_auth_header_and_username()
     if not username:
         return
+    if not repo:
+        repo = repositories_core.select_from_available_repo(subject=username)
+    if not package:
+        package = packages_core.select_from_available_packages(
+            subject=username, repo=repo
+        )
     body = pydantic_to_prompt(model=VersionCreateBodyModel)
     url = get_url(f"/packages/{username}/{repo}/{package}/versions")
     response = httpx.post(url=url, json=body.dict(), headers=headers)
@@ -46,14 +90,24 @@ def create_version(repo: str, package: str):
 
 
 def delete_version(
-    repo: str,
-    package: str,
-    version: str,
+    repo: Optional[str],
+    package: Optional[str],
+    version: Optional[str],
     is_operation_confirmed: Optional[bool] = False,
 ):
     username, headers = get_auth_header_and_username()
     if not username:
         return
+    if not repo:
+        repo = repositories_core.select_from_available_repo(subject=username)
+    if not package:
+        package = packages_core.select_from_available_packages(
+            subject=username, repo=repo
+        )
+    if not version:
+        version = files_core.select_from_available_versions(
+            subject=username, repo=repo, package=package, filename=None
+        )
     if not is_operation_confirmed and not is_operation_confirm():
         return
     url = get_url(f"/packages/{username}/{repo}/{package}/versions/{version}")
@@ -62,14 +116,24 @@ def delete_version(
 
 
 def update_version(
-    repo: str,
-    package: str,
-    version: str,
+    repo: Optional[str],
+    package: Optional[str],
+    version: Optional[str],
     is_operation_confirmed: Optional[bool] = False,
 ):
     username, headers = get_auth_header_and_username()
     if not username:
         return
+    if not repo:
+        repo = repositories_core.select_from_available_repo(subject=username)
+    if not package:
+        package = packages_core.select_from_available_packages(
+            subject=username, repo=repo
+        )
+    if not version:
+        version = files_core.select_from_available_versions(
+            subject=username, repo=repo, package=package, filename=None
+        )
     body = pydantic_to_prompt(model=VersionUpdateBodyModel)
     if not is_operation_confirmed and not is_operation_confirm():
         return
@@ -78,7 +142,9 @@ def update_version(
     response_handler(response=response, return_with_out_model=True)
 
 
-def get_version_for_file(subject: str, repo: str, file_path: str):
+def get_version_for_file(subject: str, repo: Optional[str], file_path: str):
+    if not repo:
+        repo = repositories_core.select_from_available_repo(subject=subject)
     url = get_url(f"/file_version/{subject}/{repo}/{file_path}")
     response = httpx.get(url=url)
     return response_handler(
