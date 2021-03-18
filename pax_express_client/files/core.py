@@ -18,11 +18,17 @@ from pax_express_client.repositories import core as repositories
 
 def get_versions_file(
     subject: str,
-    repo: str,
-    package: str,
+    repo: Optional[str],
+    package: Optional[str],
     include_unpublished: Optional[int] = None,
     is_internal_call: bool = False,
 ):
+    if not repo:
+        repo = repositories.select_from_available_repo(subject=subject)
+    if not package:
+        package = packages_core.select_from_available_packages(
+            subject=subject, repo=repo
+        )
     url = get_url(f"/packages/{subject}/{repo}/{package}/files")
     params = {}
     params.update({"include_unpublished": include_unpublished})
@@ -35,12 +41,22 @@ def get_versions_file(
 
 def get_package_file(
     subject: str,
-    repo: str,
-    package: str,
-    version: str,
+    repo: Optional[str],
+    package: Optional[str],
+    version: Optional[str],
     include_unpublished: int,
     is_internal_call: bool = False,
 ):
+    if not repo:
+        repo = repositories.select_from_available_repo(subject=subject)
+    if not package:
+        package = packages_core.select_from_available_packages(
+            subject=subject, repo=repo
+        )
+    if not version:
+        version = select_from_available_versions(
+            subject=subject, repo=repo, package=package, filename=None
+        )
     url = get_url(f"/packages/{subject}/{repo}/{package}/versions/{version}/files")
     params = {}
     params.update({"include_unpublished": include_unpublished})
@@ -53,12 +69,14 @@ def get_package_file(
 
 def files_search(
     subject: str,
-    repo: str,
+    repo: Optional[str],
     name: Optional[str] = None,
     sha1: Optional[str] = None,
     start_pos: Optional[str] = None,
     create_after: Optional[datetime.datetime] = None,
 ):
+    if not repo:
+        repo = repositories.select_from_available_repo(subject=subject)
     url = get_url(f"/search/file")
     params = {"subject": subject, "repo": repo}
     if name and sha1:
@@ -72,10 +90,18 @@ def files_search(
     response_handler(response=response, return_with_out_model=True)
 
 
-def file_upload(repo: str, package: str, version: str, filename: str):
+def file_upload(
+    repo: Optional[str], package: Optional[str], version: str, filename: str
+):
     username, header = get_auth_header_and_username()
     if not username:
         return
+    if not repo:
+        repo = repositories.select_from_available_repo(subject=username)
+    if not package:
+        package = packages_core.select_from_available_packages(
+            subject=username, repo=repo
+        )
     url = get_url(f"/content/{username}/{repo}/{package}/{version}/{filename}")
     try:
         with open(filename, "br") as file:
@@ -182,11 +208,20 @@ def select_from_available_files(subject: str, repo: str, package: str, version: 
 
 
 def delete_file(
-    repo: str, package: str, version: Optional[str], filename: Optional[str]
+    repo: Optional[str],
+    package: Optional[str],
+    version: Optional[str],
+    filename: Optional[str],
 ):
     username, header = get_auth_header_and_username()
     if not username:
         return
+    if not repo:
+        repo = repositories.select_from_available_repo(subject=username)
+    if not package:
+        package = packages_core.select_from_available_packages(
+            subject=username, repo=repo
+        )
     if not version:
         version = select_from_available_versions(
             subject=username, repo=repo, package=package, filename=filename
