@@ -12,6 +12,8 @@ import httpx
 from pax_express_client import print_error
 import os
 import typer
+from pax_express_client.packages import core as packages_core
+from pax_express_client.repositories import core as repositories
 
 
 def get_versions_file(
@@ -98,12 +100,18 @@ def file_upload(repo: str, package: str, version: str, filename: str):
 
 def file_download(
     subject: str,
-    repo: str,
-    package: str,
+    repo: Optional[str],
+    package: Optional[str],
     version: Optional[str],
     file_name: Optional[str],
     path_to_save: str,
 ):
+    if not repo:
+        repo = repositories.select_from_available_repo(subject=subject)
+    if not package:
+        package = packages_core.select_from_available_packages(
+            subject=subject, repo=repo
+        )
     if not version:
         version = select_from_available_versions(
             subject=subject, repo=repo, package=package, filename=file_name

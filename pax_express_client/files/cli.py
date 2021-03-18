@@ -92,8 +92,8 @@ def upload_file(
 @file_cli.command(name="download", help="Download the file")
 def download(
     subject: str = Option(..., "-s", "--subject"),
-    repo: str = Option(..., "-r", "--repo"),
-    package: str = Option(..., "-p", "--package"),
+    repo: str = Option(None, "-r", "--repo"),
+    package: str = Option(None, "-p", "--package"),
     version: str = Option(None, "-v", "--version"),
     filename: str = Option(None, "-f", "--filename"),
     path_to_save: str = Option(..., "-o", "--output-path"),
