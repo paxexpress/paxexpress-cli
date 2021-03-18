@@ -16,8 +16,8 @@ file_cli = Typer(name="file")
 @file_cli.command(name="versions-file", help="Get version for file")
 def versions_file(
     subject: str = Option(..., "-s", "--subject"),
-    repo: str = Option(..., "-r", "--repo"),
-    package: str = Option(..., "-p", "--package"),
+    repo: str = Option(None, "-r", "--repo"),
+    package: str = Option(None, "-p", "--package"),
     include_unpublished: bool = Option(
         False,
         "-U",
@@ -36,9 +36,9 @@ def versions_file(
 @file_cli.command(name="packages-file", help="List all files in a given package")
 def packages_file(
     subject: str = Option(..., "-s", "--subject"),
-    repo: str = Option(..., "-r", "--repo"),
-    package: str = Option(..., "-p", "--package"),
-    version: str = Option(..., "-v", "--version"),
+    repo: str = Option(None, "-r", "--repo"),
+    package: str = Option(None, "-p", "--package"),
+    version: str = Option(None, "-v", "--version"),
     include_unpublished: bool = Option(
         False,
         "-U",
@@ -57,7 +57,7 @@ def packages_file(
 
 @file_cli.command(name="search", help="Search for files")
 def search(
-    repo: str = Option(..., "-r", "--repo"),
+    repo: str = Option(None, "-r", "--repo"),
     subject: str = Option(..., "-s", "--subject"),
     name: Optional[str] = Option(None, "-n", "--name"),
     sha1: Optional[str] = Option(None, "--sha1"),
@@ -76,8 +76,8 @@ def search(
 
 @file_cli.command(name="upload", help="Upload file")
 def upload_file(
-    repo: str = Option(..., "-r", "--repo"),
-    package: str = Option(..., "-p", "--package"),
+    repo: str = Option(None, "-r", "--repo"),
+    package: str = Option(None, "-p", "--package"),
     version: str = Option(..., "-v", "--version"),
     filename: str = Option(..., "-f", "--filename"),
 ):
@@ -110,8 +110,8 @@ def download(
 
 @file_cli.command(name="delete", help="Delete a file")
 def delete(
-    repo: str = Option(..., "-r", "--repo"),
-    package: str = Option(..., "-p", "--package"),
+    repo: str = Option(None, "-r", "--repo"),
+    package: str = Option(None, "-p", "--package"),
     version: Optional[str] = Option(None, "-v", "--version"),
     filename: Optional[str] = Option(None, "-f", "--filename"),
 ):
