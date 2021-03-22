@@ -13,6 +13,7 @@ pydantic = { extras = ["email"], version = "^1.8.1" }
 keyring = "^22.3.0"
 pypiwin32 = { version = "^223", markers = "sys_platform == 'win32'" }
 inquirer = "^2.7.0"
+rich = "^9.13.0"
 
 
 [tool.poetry.dev-dependencies]
