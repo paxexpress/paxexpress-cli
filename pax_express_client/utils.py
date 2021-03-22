@@ -1,6 +1,5 @@
 from typing import Any, ClassVar, Optional, Callable, Union, List
-from pprint import pprint
-
+from rich import print
 import inquirer
 import typer
 from pax_express_client import env_settings
@@ -34,7 +33,7 @@ def result_print(result: Union[dict, list, str], is_success: bool, status_code: 
         mini_line = typer.style(f"{'-' * 20}", fg=typer.colors.YELLOW)
         typer.echo(mini_line)
     if result is not None:
-        pprint(result)
+        print(result)
         typer.echo(line)
 
 
