@@ -142,3 +142,5 @@ cython_debug/
 .pax_info
 paxexpress.build
 paxexpress.bin
+.vscode
+test.py

@@ -1,4 +1,4 @@
-from typing import Any, ClassVar, Optional, Callable, Union, List
+from typing import Any, ClassVar, Dict, Optional, Callable, Union, List
 from rich import print
 import inquirer
 import typer
@@ -6,6 +6,10 @@ from pax_express_client import env_settings
 from httpx import Response
 import keyring
 import re
+from rich.console import Console
+from rich.table import Table
+from rich.padding import Padding
+
 
 names_regex = r"^([a-z]|[A-Z]|[0-9]|[-]|[.])+$"
 
@@ -14,27 +18,34 @@ def get_url(url: str) -> str:
     return f"{env_settings.API_ENDPOINT}{url}"
 
 
-def result_print(result: Union[dict, list, str], is_success: bool, status_code: int):
-    if is_success:
-        result_state = typer.style(text="Success", fg=typer.colors.GREEN, bold=True)
-        status_code = typer.style(
-            text=f"{status_code}", fg=typer.colors.GREEN, bold=True
+def print_status_table(
+    result: Union[dict, list, str], is_success: bool, status_code: int
+):
+    table = Table(title="Request Status")
+    table.add_column("State", style="green" if is_success else "red")
+    table.add_column("Code", style="green" if is_success else "red")
+    if isinstance(result, list):
+        table.add_column("total")
+        table.add_row(
+            "Success" if is_success else "Failed",
+            str(status_code),
+            f"[red]{str(len(result))}",
         )
     else:
-        result_state = typer.style(text="Failed", fg=typer.colors.RED, bold=True)
-        status_code = typer.style(text=f"{status_code}", fg=typer.colors.RED, bold=True)
-    line = typer.style(f"{'-' * 20 + 'result' + '-' * 20}", fg=typer.colors.YELLOW)
-    typer.echo(f"State: {result_state} with code: {status_code}")
-    typer.echo(line)
+        table.add_row("Success" if is_success else "Failed", str(status_code))
 
-    if isinstance(result, list):
-        item_count = typer.style(text=f"{len(result)}", fg=typer.colors.RED, bold=True)
-        typer.echo(f" total items: {item_count}")
-        mini_line = typer.style(f"{'-' * 20}", fg=typer.colors.YELLOW)
-        typer.echo(mini_line)
+    print(table)
+
+
+def result_print(result: Union[dict, list, str], is_success: bool, status_code: int):
+    print_status_table(result=result, is_success=is_success, status_code=status_code)
     if result is not None:
-        print(result)
-        typer.echo(line)
+        if isinstance(result, list):
+            print_list_as_table(result)
+        elif isinstance(result, dict):
+            print_dict_as_table(data=result)
+        else:
+            print(result)
 
 
 def response_handler(
@@ -53,13 +64,25 @@ def response_handler(
 
 
 def print_error(message: str):
-    error = typer.style(text=f"{message}", fg=typer.colors.RED, bold=True)
-    typer.echo(f"Error: {error}", err=True)
+    print(f"Error: [red bold] {message}")
 
 
 def print_message(message: str):
-    message = typer.style(text=message, fg=typer.colors.GREEN, bold=True)
-    typer.echo(message)
+    print(f"[green bold] {message}")
+
+
+def print_dict_as_table(data: Dict):
+    table = Table()
+    table.add_column("Field Name", style="cyan")
+    table.add_column("Field Value", style="green")
+    for key in data.keys():
+        table.add_row(key, str(data[key]))
+    print(table)
+
+
+def print_list_as_table(data: List[Dict]):
+    for index in data:
+        print_dict_as_table(data=index)
 
 
 def pydantic_to_prompt(model: ClassVar) -> Any:
