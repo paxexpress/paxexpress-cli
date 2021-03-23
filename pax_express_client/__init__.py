@@ -15,5 +15,6 @@ from .authentication.core import get_auth_header_and_username
 from .packages.cli import package_cli
 from .versions.cli import version_cli
 from .files.cli import file_cli
+from .info.cli import info_cli
 
 __version__ = "0.1.0"

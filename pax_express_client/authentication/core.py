@@ -47,7 +47,7 @@ def login(email: str, password: str):
             )
             save_username(username=modeled_response.username)
             print_message(
-                "You have successfully logged in \nYour login will expire after 30 Minutes"
+                "You have successfully logged in\nYour login will expire after [red bold]30[/] Minutes"
             )
             return
         else:

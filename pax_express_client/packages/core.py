@@ -75,10 +75,12 @@ def get_package(
     return response_handler(response=response, return_model=PackageModel)
 
 
-def create_package(repo: str):
+def create_package(repo: Optional[str]):
     username, headers = get_auth_header_and_username()
     if not username:
         return
+    if not repo:
+        repo = repositories_core.select_from_available_repo(subject=username)
     body = pydantic_to_prompt(model=PackageCreateBodyModel)
     url = get_url(f"/packages/{username}/{repo}")
     response = httpx.post(url=url, json=body.dict(), headers=headers)

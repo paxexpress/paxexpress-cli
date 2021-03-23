@@ -42,7 +42,7 @@ def get(
 
 
 @package_cli.command(help="Create a package")
-def create(repo: str = Option(..., "-r", "--repo")):
+def create(repo: str = Option(None, "-r", "--repo")):
     create_package(repo=repo)
 
 
