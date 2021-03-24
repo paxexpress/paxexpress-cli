@@ -7,7 +7,6 @@ from pax_express_client import (
     package_cli,
     file_cli,
     version_cli,
-    info_cli,
 )
 from rich import print
 
@@ -39,7 +38,6 @@ cli.add_typer(authentication_cli, name="auth", help="login and logout")
 cli.add_typer(package_cli, name="package", help="Work with packages")
 cli.add_typer(version_cli, name="version", help="Work with versions")
 cli.add_typer(file_cli, name="file", help="Work with files")
-cli.add_typer(info_cli, name="info", help="information about paxexpress")
 
 
 self_cli = Typer(name="self")
