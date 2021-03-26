@@ -7,32 +7,57 @@
 
 ## Building binaries
 
-We use [nuitka](https://nuitka.net/) to build binaries for different platforms.
+We use [PyOxidizer](https://github.com/indygreg/PyOxidizer) and [warp](https://github.com/dgiagio/warp) to build binaries for different platforms.
 
 ### Linux
 
 ```shell
-poetry install
-poetry shell
-python -m nuitka --standalone --no-prefer-source-code --linux-onefile-icon 'pax_express_client/icon.png' --include-module typing_extensions --include-package email_validator --onefile --follow-imports $(which paxexpress)
+pyoxidizer build --release
+
+cd build/x86_64-[distribution]-linux-gnu/release
+
+curl -Lo warp-packer https://github.com/dgiagio/warp/releases/download/v0.3.0/linux-x64.warp-packer
+
+chmod +x warp-packer
+
+./warp-packer -a macos-x64 -i install -e paxexpress -o paxexpress
+
+./warp-packer --arch linux-x64 --input_dir install --exec paxexpress --output paxexpress
+
+chmod +x paxexpress
+
 ```
 
-Will result in a single file named `paxexpress.bin`
+Will result in a single file named `paxexpress`
 
 ### Windows
+
+download the warp from [windows warp packer](https://github.com/dgiagio/warp/releases/download/v0.3.0/windows-x64.warp-packer.exe)
+
 ```shell
-poetry install
-poetry shell
-for %i in (where paxexpress) do @python.exe -m nuitka --standalone --include-module typing_extensions  --include-package email_validator  --onefile --include-package win32ctypes  --follow-imports --windows-onefile-tempdir --windows-company-name=`company name` --windows-product-version=`version name` %~$PATH:i
+pyoxidizer build --release
+
+cd \build\x86_64-pc-windows-msvc\release
+
+.\warp-packer --arch windows-x64 --input_dir .\install\ --exec paxexpress.exe --output paxexpress.exe
+
 ```
+
 Will result in a single file named `paxexpress.exe`
 
-
-
 ### Mac OS X
+
 ```shell
-poetry install
-poetry shell
-python -m nuitka --follow-imports $(which paxexpress)
+pyoxidizer build --release
+
+cd  ./build/x86_64-apple-darwin/release
+
+curl -Lo warp-packer https://github.com/dgiagio/warp/releases/download/v0.3.0/macos-x64.warp-packer
+
+chmod +x warp-packer
+
+./warp-packer -a macos-x64 -i install -e paxexpress -o paxexpress
+
 ```
-Will result in a single file named `paxexpress.bin`
+
+Will result in a single file named `paxexpress`
