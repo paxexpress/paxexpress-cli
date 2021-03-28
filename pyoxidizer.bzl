@@ -207,7 +207,7 @@ def make_exe(dist):
     #packaging_rules = []
     #packaging_rules.append(PipInstallSimple("git+https://github.com/jayvdb/cryptography#egg=cryptography"))
 
-    for resource in exe.pip_install(["."]):
+    for resource in exe.pip_install([".","rich==9.13.0"]):
         resource.add_location = "in-memory"
         exe.add_python_resource(resource)
 
