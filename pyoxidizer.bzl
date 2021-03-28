@@ -91,6 +91,9 @@ def make_exe(dist):
 
     # Use filesystem-relative location for adding resources by default.
     # policy.resources_location = "filesystem-relative:prefix"
+    policy.resources_location_fallback = "filesystem-relative:lib"
+
+
 
     # Attempt to add resources relative to the built binary when
     # `resources_location` fails.
@@ -126,7 +129,7 @@ def make_exe(dist):
 
     # Set initial value for `sys.path`. If the string `$ORIGIN` exists in
     # a value, it will be expanded to the directory of the built executable.
-    # python_config.module_search_paths = ["$ORIGIN/lib"]
+    python_config.module_search_paths = ["$ORIGIN/lib"]
 
     # Use jemalloc as Python's memory allocator.
     # python_config.allocator_backend = "jemalloc"
@@ -176,13 +179,13 @@ def make_exe(dist):
     # python_config.write_modules_directory_env = "/tmp/oxidized/loaded_modules"
 
     # Evaluate a string as Python code when the interpreter starts.
-    # python_config.run_command = "import pax_express_client.cli; pax_express_client.cli.main()"
+    python_config.run_command = "import pax_express_client.cli; pax_express_client.cli.main()"
 
     # Run a Python module as __main__ when the interpreter starts.
     python_config.run_module = "pax_express_client.cli"
 
     # Run a Python file when the interpreter starts.
-    # python_config.run_filename = "/path/to/file"
+    # python_config.run_filename = "/pat"
 
     # Produce a PythonExecutable from a Python distribution, embedded
     # resources, and other options. The returned object represents the
@@ -197,6 +200,9 @@ def make_exe(dist):
         # If no argument passed, the default `PythonInterpreterConfig` is used.
         config=python_config,
     )
+    # for resource in exe.pip_download(["pydantic[email]==1.8.1"]):
+    #     resource.add_location = "filesystem-relative:lib"
+    #     exe.add_python_resource(resource)
 
     #packaging_rules = []
     #packaging_rules.append(PipInstallSimple("git+https://github.com/jayvdb/cryptography#egg=cryptography"))
@@ -242,7 +248,7 @@ def make_exe(dist):
 
     # Invoke `pip install` using a requirements file and add the collected resources
     # to our binary.
-    exe.add_python_resources(exe.pip_install(["-r", "requirements.txt"]))
+    # exe.add_python_resources(exe.pip_install(["-r", "requirements.txt"]))
 
     
 

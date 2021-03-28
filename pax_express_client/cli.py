@@ -50,6 +50,8 @@ def version():
 
 cli.add_typer(self_cli, name="self")
 
+def main():
+    cli()
 
 if __name__ == "__main__":
     cli()
