@@ -6,7 +6,9 @@
 # this distribution into our produced executable and extract the Python
 # standard library from it.
 def make_dist():
-    return default_python_distribution()
+    # return default_python_distribution(flavor="standalone_dynamic")
+    return default_python_distribution(flavor="standalone")
+
 
 # Configuration files consist of functions which define build "targets."
 # This function creates a Python executable and installs it in a destination
@@ -182,7 +184,7 @@ def make_exe(dist):
     python_config.run_command = "import pax_express_client.cli; pax_express_client.cli.main()"
 
     # Run a Python module as __main__ when the interpreter starts.
-    python_config.run_module = "pax_express_client.cli"
+    # python_config.run_module = "pax_express_client.cli"
 
     # Run a Python file when the interpreter starts.
     # python_config.run_filename = "/pat"
@@ -191,7 +193,7 @@ def make_exe(dist):
     # resources, and other options. The returned object represents the
     # standalone executable that will be built.
     exe = dist.to_python_executable(
-        name="paxexpress-cli",
+        name="paxexpress",
 
         # If no argument passed, the default `PythonPackagingPolicy` for the
         # distribution is used.
@@ -224,10 +226,10 @@ def make_exe(dist):
 
     # Copy Windows runtime DLLs next to the build executable and error if this
     # cannot be done.
-    # exe.windows_runtime_dlls_mode = "always"
+    exe.windows_runtime_dlls_mode = "always"
 
     # Make the executable a console application on Windows.
-    # exe.windows_subsystem = "console"
+    exe.windows_subsystem = "console"
 
     # Make the executable a non-console application on Windows.
     # exe.windows_subsystem = "windows"
@@ -255,10 +257,10 @@ def make_exe(dist):
     # Read Python files from a local directory and add them to our embedded
     # context, taking just the resources belonging to the `foo` and `bar`
     # Python packages.
-    #exe.add_python_resources(exe.read_package_root(
-    #    path="/src/mypackage",
-    #    packages=["foo", "bar"],
-    #))
+    # exe.add_python_resources(exe.read_package_root(
+    #    path="./pax_express_client",
+    #    packages=["pax_express_client"],
+    # ))
 
     # Discover Python files from a virtualenv and add them to our embedded
     # context.
