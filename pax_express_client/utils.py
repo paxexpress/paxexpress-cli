@@ -80,9 +80,17 @@ def print_dict_as_table(data: Dict):
     print(table)
 
 
-def print_list_as_table(data: List[Dict]):
-    for index in data:
-        print_dict_as_table(data=index)
+def print_list_as_table(list_data: List[Dict]):
+    table = Table()
+    added_columns = []
+    for data in list_data:
+        for key in data.keys():
+            if key not in added_columns:
+                table.add_column(key, style="green")
+                added_columns.append(key)
+    for item in list_data:
+        table.add_row(*[str(d) for d in list(item.values())])
+    print(table)
 
 
 def pydantic_to_prompt(model: ClassVar) -> Any:
