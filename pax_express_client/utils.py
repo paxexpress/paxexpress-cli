@@ -52,9 +52,13 @@ def response_handler(
     response: Response,
     return_model: Optional[Callable] = None,
     return_with_out_model: Optional[bool] = False,
+    print_result: bool = True,
 ):
     if response.status_code == 201 or response.status_code == 200:
-        result_print(response.json(), is_success=True, status_code=response.status_code)
+        if print_result:
+            result_print(
+                response.json(), is_success=True, status_code=response.status_code
+            )
         if return_model:
             return return_model(**response.json())
         elif return_with_out_model:
@@ -154,6 +158,20 @@ def is_operation_confirm() -> bool:
 def select_available_options(name: str, message: str, choices: list) -> Any:
     questions = [
         inquirer.List(
+            name=name,
+            message=message,
+            choices=choices,
+        ),
+    ]
+    answers = inquirer.prompt(questions)
+    return answers
+
+
+def select_available_options_checkbox(
+    name: str, message: str, choices: list
+) -> List[Any]:
+    questions = [
+        inquirer.Checkbox(
             name=name,
             message=message,
             choices=choices,
