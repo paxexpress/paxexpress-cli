@@ -11,8 +11,20 @@ from .models import (
     UserLoginResponseModel,
     UserUpdatePasswordBodyModel,
     UserUpdatePasswordResponseModel,
+    ScopesGetValidResponseModel,
+    AddUserScopesBodyModel,
+    UserScopeAddResponseModel,
+    DeleteScopeBodyModel,
+    UserScopeDeleteResponseModel,
+    UsersScopesGetResponseModel,
 )
-from pax_express_client import print_error, print_message, get_url, response_handler
+from pax_express_client import (
+    print_error,
+    print_message,
+    get_url,
+    response_handler,
+    select_available_options_checkbox,
+)
 import httpx
 import keyring
 import typer
@@ -35,10 +47,18 @@ def register(email: str, username: str, beta_key: str, password: str):
         print_error("Check your inputs")
 
 
-def login(email: str, password: str):
+def login(email: str, password: str, as_admin: bool = False):
     url: str = get_url(f"/user/login")
     try:
-        response = httpx.post(url=url, data={"username": email, "password": password})
+        data = {"username": email, "password": password}
+        if as_admin:
+            scopes = get_valid_scopes()
+            if not scopes:
+                print_error("No Scope has been selected!")
+                exit(1)
+            scopes = " ".join(scopes)
+            data.update({"scope": scopes})
+        response = httpx.post(url=url, data=data)
 
         if response.status_code == 200:
             modeled_response = UserLoginResponseModel(**response.json())
@@ -124,3 +144,52 @@ def change_password(current_password: str, new_password: str):
         json=UserUpdatePasswordBodyModel(new_password=new_password).dict(),
     )
     response_handler(response=response, return_model=UserUpdatePasswordResponseModel)
+
+
+def get_valid_scopes():
+    url = get_url("/v1/authorization/scopes")
+    response = httpx.get(url=url)
+    result: ScopesGetValidResponseModel = response_handler(
+        response=response, return_model=ScopesGetValidResponseModel, print_result=False
+    )
+    scopes = select_available_options_checkbox(
+        name="Scopes", message="Select scopes", choices=result.valid_scopes
+    )
+    return scopes["Scopes"] if scopes else []
+
+
+def add_scope(users_username: str):
+    username, headers = get_auth_header_and_username()
+    if not username:
+        exit(1)
+    scopes = get_valid_scopes()
+    if not scopes:
+        print_error("No Scope has been selected!")
+        exit(1)
+    url = get_url(f"/v1/authorization/user/{users_username}/scopes/add")
+    body = AddUserScopesBodyModel(scopes=scopes)
+    response = httpx.post(url=url, headers=headers, json=body.dict())
+    response_handler(response=response, return_model=UserScopeAddResponseModel)
+
+
+def remove_scope(users_username: str):
+    username, headers = get_auth_header_and_username()
+    if not username:
+        exit(1)
+    scopes = get_valid_scopes()
+    if not scopes:
+        print_error("No Scope has been selected!")
+        exit(1)
+    url = get_url(f"/v1/authorization/user/{users_username}/scopes")
+    body = DeleteScopeBodyModel(scopes=scopes)
+    response = httpx.patch(url=url, headers=headers, json=body.dict())
+    response_handler(response=response, return_model=UserScopeDeleteResponseModel)
+
+
+def get_users_scope(users_username: str):
+    username, headers = get_auth_header_and_username()
+    if not username:
+        exit(1)
+    url = get_url(f"/v1/authorization/user/{users_username}/scopes/get")
+    response = httpx.get(url=url, headers=headers)
+    response_handler(response=response, return_model=UsersScopesGetResponseModel)

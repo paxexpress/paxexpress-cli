@@ -1,4 +1,6 @@
+from typing import List
 from pydantic import BaseModel, EmailStr
+import datetime
 
 
 class GenericResponseModel(BaseModel):
@@ -68,3 +70,34 @@ class UserUpdatePasswordBodyModel(BaseModel):
 
 class UserUpdatePasswordResponseModel(GenericResponseModel):
     pass
+
+
+class ScopesGetValidResponseModel(BaseModel):
+    valid_scopes: List[str]
+
+
+class UserScopes(BaseModel):
+    user_id: str
+    scopes: List[str] = []
+    last_modified: datetime.datetime = datetime.datetime.now().isoformat()
+
+
+class UsersScopesGetResponseModel(BaseModel):
+    user_id: str
+    scopes: List[str] = []
+
+
+class DeleteScopeBodyModel(BaseModel):
+    scopes: List[str]
+
+
+class AddUserScopesBodyModel(BaseModel):
+    scopes: List[str]
+
+
+class UserScopeDeleteResponseModel(GenericResponseModel):
+    message: str
+
+
+class UserScopeAddResponseModel(GenericResponseModel):
+    message: str
