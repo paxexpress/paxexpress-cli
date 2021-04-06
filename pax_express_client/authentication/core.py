@@ -1,5 +1,5 @@
 import os
-from typing import Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 import pathlib
 
 from keyring.errors import PasswordDeleteError
@@ -17,6 +17,7 @@ from .models import (
     DeleteScopeBodyModel,
     UserScopeDeleteResponseModel,
     UsersScopesGetResponseModel,
+    GetLegalDocumentsResponseModel,
 )
 from pax_express_client import (
     print_error,
@@ -70,6 +71,19 @@ def login(email: str, password: str, as_admin: bool = False):
                 "You have successfully logged in\nYour login will expire after [red bold]30[/] Minutes"
             )
             return
+        elif response.status_code == 406:
+            if response.json()["detail"].get("legal_documents"):
+                show_available_legal_documents_list(
+                    filter_by_legal_document_id=response.json()["detail"].get(
+                        "legal_documents"
+                    ),
+                    username=response.json()["detail"].get("username"),
+                    password=password,
+                )
+
+                login(email=email, password=password)
+
+            pass
         else:
             print_error(response.text)
             return
@@ -193,3 +207,44 @@ def get_users_scope(users_username: str):
     url = get_url(f"/v1/authorization/user/{users_username}/scopes/get")
     response = httpx.get(url=url, headers=headers)
     response_handler(response=response, return_model=UsersScopesGetResponseModel)
+
+
+def accept_legal_document(document_id: str, username: str, password: str):
+    url = get_url(f"/v1/legal/{document_id}/accept")
+    response = httpx.post(
+        url=url, auth=httpx.BasicAuth(username=username, password=password)
+    )
+    response_handler(response=response)
+
+
+def show_available_legal_documents_list(
+    filter_by_legal_document_id: List[str], username: str, password: str
+) -> GetLegalDocumentsResponseModel:
+    url = get_url(f"/v1/legals")
+    response = httpx.get(url=url)
+    response: GetLegalDocumentsResponseModel = response_handler(
+        print_result=False,
+        response=response,
+        return_model=GetLegalDocumentsResponseModel,
+    )
+    legal_documents_to_select = []
+    for item in response.legal_documents:
+        legal_document_id = next(iter(item))
+        if legal_document_id in filter_by_legal_document_id:
+            legal_document_url = get_url(item[legal_document_id])
+            legal_documents_to_select.append({legal_document_id: legal_document_url})
+
+    selected_items = select_available_options_checkbox(
+        name="EULAs",
+        message="Select the legal documents to accpet",
+        choices=legal_documents_to_select,
+    )
+    if selected_items:
+        for legal_document in selected_items["EULAs"]:
+            accept_legal_document(
+                document_id=next(iter(legal_document)),
+                username=username,
+                password=password,
+            )
+    else:
+        exit(0)
