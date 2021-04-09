@@ -249,7 +249,10 @@ def show_available_legal_documents_list(
                 choices=["Yes", "No"],
             ),
         ]
-        answer = inquirer.prompt(questions)["open"]
+        result = inquirer.prompt(questions)
+        if not result:
+            exit(0)
+        answer = result["open"]
         if answer == "Yes":
             import webbrowser
 
@@ -261,7 +264,10 @@ def show_available_legal_documents_list(
                 choices=["Yes", "No"],
             ),
         ]
-        answer = inquirer.prompt(questions)["accept"]
+        result = inquirer.prompt(questions)
+        if not result:
+            exit(0)
+        answer = result["accept"]
         if answer == "Yes":
             accept_legal_document(
                 document_id=document_id,
