@@ -29,6 +29,8 @@ from pax_express_client import (
 import httpx
 import keyring
 import typer
+from pax_express_client import utils
+import inquirer
 
 pax_info_file_path = os.path.join(pathlib.Path.home(), ".pax_info")
 
@@ -214,7 +216,7 @@ def accept_legal_document(document_id: str, username: str, password: str):
     response = httpx.post(
         url=url, auth=httpx.BasicAuth(username=username, password=password)
     )
-    response_handler(response=response)
+    response_handler(response=response, print_result=False)
 
 
 def show_available_legal_documents_list(
@@ -230,21 +232,44 @@ def show_available_legal_documents_list(
     legal_documents_to_select = []
     for item in response.legal_documents:
         if item["id"] in filter_by_legal_document_id:
-            item["url"] = get_url(f"/documents/legals/{item['id']}")
             legal_documents_to_select.append(item)
 
-    selected_items = select_available_options_checkbox(
-        name="EULAs",
-        message="Select the legal documents to accpet",
-        choices=legal_documents_to_select,
-    )
-    if selected_items:
-        print(selected_items)
-        for legal_document in selected_items["EULAs"]:
+    count = len(legal_documents_to_select)
+    print(f"There are {count} documents that must be accepted before you can proceed.")
+    for document in legal_documents_to_select:
+        document_id = document["id"]
+        name = document["name"]
+        url = get_url(document["url"])
+        utils.print(f"Please carefully read our [bold]{name}[/bold].")
+        utils.print("URL: " + url)
+        questions = [
+            inquirer.List(
+                "open",
+                message=f"Automatically open in browser?",
+                choices=["Yes", "No"],
+            ),
+        ]
+        answer = inquirer.prompt(questions)["open"]
+        if answer == "Yes":
+            import webbrowser
+
+            webbrowser.open(url)
+        questions = [
+            inquirer.List(
+                "accept",
+                message=f"Do you accept?",
+                choices=["Yes", "No"],
+            ),
+        ]
+        answer = inquirer.prompt(questions)["accept"]
+        if answer == "Yes":
             accept_legal_document(
-                document_id=legal_document["id"],
+                document_id=document_id,
                 username=username,
                 password=password,
             )
-    else:
-        exit(0)
+        else:
+            utils.print(
+                f"[bold red]Usage of pax.express is not possible without accepting {name}. Sorry."
+            )
+            exit(0)
