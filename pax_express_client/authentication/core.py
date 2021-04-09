@@ -210,7 +210,7 @@ def get_users_scope(users_username: str):
 
 
 def accept_legal_document(document_id: str, username: str, password: str):
-    url = get_url(f"/v1/legal/{document_id}/accept")
+    url = get_url(f"/v1/legals/{document_id}/accept")
     response = httpx.post(
         url=url, auth=httpx.BasicAuth(username=username, password=password)
     )
@@ -229,10 +229,9 @@ def show_available_legal_documents_list(
     )
     legal_documents_to_select = []
     for item in response.legal_documents:
-        legal_document_id = next(iter(item))
-        if legal_document_id in filter_by_legal_document_id:
-            legal_document_url = get_url(item[legal_document_id])
-            legal_documents_to_select.append({legal_document_id: legal_document_url})
+        if item["id"] in filter_by_legal_document_id:
+            item["url"] = get_url(f"/documents/legals/{item['id']}")
+            legal_documents_to_select.append(item)
 
     selected_items = select_available_options_checkbox(
         name="EULAs",
@@ -240,9 +239,10 @@ def show_available_legal_documents_list(
         choices=legal_documents_to_select,
     )
     if selected_items:
+        print(selected_items)
         for legal_document in selected_items["EULAs"]:
             accept_legal_document(
-                document_id=next(iter(legal_document)),
+                document_id=legal_document["id"],
                 username=username,
                 password=password,
             )
