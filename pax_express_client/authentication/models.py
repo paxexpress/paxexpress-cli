@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 from pydantic import BaseModel, EmailStr
 import datetime
 
@@ -101,3 +101,25 @@ class UserScopeDeleteResponseModel(GenericResponseModel):
 
 class UserScopeAddResponseModel(GenericResponseModel):
     message: str
+
+
+class LegalDocumentSourceModel(BaseModel):
+    provider: str
+    public_id: int
+
+
+class LegalDocumentModel(BaseModel):
+    id: str
+    source: LegalDocumentSourceModel
+
+
+class LegalDocumentDBModel(LegalDocumentModel):
+    last_modified: datetime.datetime = datetime.datetime.now()
+
+
+class LegalDocumentsGetListResponseModel(BaseModel):
+    legal_documents: List[LegalDocumentDBModel]
+
+
+class GetLegalDocumentsResponseModel(BaseModel):
+    legal_documents: List[Dict[str, str]]

@@ -1,5 +1,5 @@
 import os
-from typing import Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 import pathlib
 
 from keyring.errors import PasswordDeleteError
@@ -17,6 +17,7 @@ from .models import (
     DeleteScopeBodyModel,
     UserScopeDeleteResponseModel,
     UsersScopesGetResponseModel,
+    GetLegalDocumentsResponseModel,
 )
 from pax_express_client import (
     print_error,
@@ -28,6 +29,8 @@ from pax_express_client import (
 import httpx
 import keyring
 import typer
+from pax_express_client import utils
+import inquirer
 
 pax_info_file_path = os.path.join(pathlib.Path.home(), ".pax_info")
 
@@ -70,6 +73,19 @@ def login(email: str, password: str, as_admin: bool = False):
                 "You have successfully logged in\nYour login will expire after [red bold]30[/] Minutes"
             )
             return
+        elif response.status_code == 406:
+            if response.json()["detail"].get("legal_documents"):
+                show_available_legal_documents_list(
+                    filter_by_legal_document_id=response.json()["detail"].get(
+                        "legal_documents"
+                    ),
+                    username=response.json()["detail"].get("username"),
+                    password=password,
+                )
+
+                login(email=email, password=password)
+
+            pass
         else:
             print_error(response.text)
             return
@@ -193,3 +209,73 @@ def get_users_scope(users_username: str):
     url = get_url(f"/v1/authorization/user/{users_username}/scopes/get")
     response = httpx.get(url=url, headers=headers)
     response_handler(response=response, return_model=UsersScopesGetResponseModel)
+
+
+def accept_legal_document(document_id: str, username: str, password: str):
+    url = get_url(f"/v1/legals/{document_id}/accept")
+    response = httpx.post(
+        url=url, auth=httpx.BasicAuth(username=username, password=password)
+    )
+    response_handler(response=response, print_result=False)
+
+
+def show_available_legal_documents_list(
+    filter_by_legal_document_id: List[str], username: str, password: str
+) -> GetLegalDocumentsResponseModel:
+    url = get_url(f"/v1/legals")
+    response = httpx.get(url=url)
+    response: GetLegalDocumentsResponseModel = response_handler(
+        print_result=False,
+        response=response,
+        return_model=GetLegalDocumentsResponseModel,
+    )
+    legal_documents_to_select = []
+    for item in response.legal_documents:
+        if item["id"] in filter_by_legal_document_id:
+            legal_documents_to_select.append(item)
+
+    count = len(legal_documents_to_select)
+    print(f"There are {count} documents that must be accepted before you can proceed.")
+    for document in legal_documents_to_select:
+        document_id = document["id"]
+        name = document["name"]
+        url = get_url(document["url"])
+        utils.print(f"Please carefully read our [bold]{name}[/bold].")
+        utils.print("URL: " + url)
+        questions = [
+            inquirer.List(
+                "open",
+                message=f"Automatically open in browser?",
+                choices=["Yes", "No"],
+            ),
+        ]
+        result = inquirer.prompt(questions)
+        if not result:
+            exit(0)
+        answer = result["open"]
+        if answer == "Yes":
+            import webbrowser
+
+            webbrowser.open(url)
+        questions = [
+            inquirer.List(
+                "accept",
+                message=f"Do you accept?",
+                choices=["Yes", "No"],
+            ),
+        ]
+        result = inquirer.prompt(questions)
+        if not result:
+            exit(0)
+        answer = result["accept"]
+        if answer == "Yes":
+            accept_legal_document(
+                document_id=document_id,
+                username=username,
+                password=password,
+            )
+        else:
+            utils.print(
+                f"[bold red]Usage of pax.express is not possible without accepting {name}. Sorry."
+            )
+            exit(0)
