@@ -35,14 +35,13 @@ import inquirer
 pax_info_file_path = os.path.join(pathlib.Path.home(), ".pax_info")
 
 
-def register(email: str, username: str, beta_key: str, password: str):
+def register(email: str, username: str, password: str):
     url: str = get_url(url=f"/user/register")
     try:
         body = UserRegisterBodyModel(
             username=username,
             email=EmailStr(email),
             password=password,
-            beta_key=beta_key,
         )
         response = httpx.post(url=url, json=body.dict())
         response_handler(response=response, return_model=UserRegisterResponseModel)
