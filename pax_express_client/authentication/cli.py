@@ -11,9 +11,8 @@ authentication_cli.add_typer(admin_auth, name="admin")
 def register():
     email: str = typer.prompt("Email")
     username: str = custom_prompt(text="Username")
-    beta_key: str = typer.prompt("Beta_Key")
     password = typer.prompt("Password", hide_input=True, confirmation_prompt=True)
-    core.register(email=email, username=username, password=password, beta_key=beta_key)
+    core.register(email=email, username=username, password=password)
 
 
 @authentication_cli.command(name="login", help="Login")

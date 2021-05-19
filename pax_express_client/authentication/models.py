@@ -19,7 +19,6 @@ class UserRegisterBodyModel(BaseModel):
     username: str
     email: EmailStr
     password: str
-    beta_key: str
 
     class Config:
         schema_extra = {
@@ -27,7 +26,6 @@ class UserRegisterBodyModel(BaseModel):
                 "username": "greyrook",
                 "email": "info@greyrook.com",
                 "password": "greyrook",
-                "beta_key": "greyrook",
             }
         }
 
