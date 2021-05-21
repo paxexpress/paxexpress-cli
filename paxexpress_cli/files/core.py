@@ -1,6 +1,6 @@
 from typing import Optional, Any
 import datetime
-from pax_express_client import (
+from paxexpress_cli import (
     get_url,
     response_handler,
     print_message,
@@ -9,11 +9,11 @@ from pax_express_client import (
 )
 from .models import FileDeleteResponseModel
 import httpx
-from pax_express_client import print_error
+from paxexpress_cli import print_error
 import os
 import typer
-from pax_express_client.packages import core as packages_core
-from pax_express_client.repositories import core as repositories
+from paxexpress_cli.packages import core as packages_core
+from paxexpress_cli.repositories import core as repositories
 
 
 def get_versions_file(

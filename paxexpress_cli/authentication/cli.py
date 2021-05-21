@@ -1,5 +1,5 @@
 import typer
-from pax_express_client import print_error, custom_prompt
+from paxexpress_cli import print_error, custom_prompt
 from . import core
 
 authentication_cli = typer.Typer(name="authentication")

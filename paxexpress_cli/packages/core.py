@@ -5,7 +5,7 @@ from .models import (
     PackageDeleteResponseModel,
     PackageUpdateBodyModel,
 )
-from pax_express_client import (
+from paxexpress_cli import (
     get_url,
     response_handler,
     pydantic_to_prompt,

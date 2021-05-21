@@ -6,16 +6,16 @@ from .models import (
     VersionUpdateBodyModel,
     VersionGetFileVersionResponseModel,
 )
-from pax_express_client import (
+from paxexpress_cli import (
     get_url,
     response_handler,
     pydantic_to_prompt,
     is_operation_confirm,
 )
 from ..authentication.core import get_auth_header_and_username
-from pax_express_client.repositories import core as repositories_core
-from pax_express_client.packages import core as packages_core
-from pax_express_client.files import core as files_core
+from paxexpress_cli.repositories import core as repositories_core
+from paxexpress_cli.packages import core as packages_core
+from paxexpress_cli.files import core as files_core
 
 
 def get_latest(
