@@ -16,10 +16,6 @@ inquirer = "^2.7.0"
 rich = "^9.13.0"
 
 
-[tool.poetry.dev-dependencies]
-pydantic = "^1.7.3"
-
-
 [tool.poetry.scripts]
 paxexpress = 'paxexpress_cli.cli:cli'
 
