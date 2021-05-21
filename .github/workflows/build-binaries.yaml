@@ -1,8 +1,7 @@
 name: Build paxexpress binaries
 on:
   push:
-    #  tags:
-    #    - 'v*'
+
 jobs:
   mac-os-release:
     name: Build MacOs binary
@@ -55,10 +54,7 @@ jobs:
       - name: packing
         shell: powershell
         run: |
-          cd .\build\x86_64-pc-windows-msvc\release\install
-          ls
-          cd ..
-          ls
+          cd .\build\x86_64-pc-windows-msvc\release
           [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls" ; Invoke-WebRequest https://github.com/dgiagio/warp/releases/download/v0.3.0/windows-x64.warp-packer.exe -OutFile warp-packer.exe
           echo $GITHUB_REF
           .\warp-packer.exe --arch windows-x64 --input_dir .\install\ --exec paxexpress.exe --output paxexpress.exe
@@ -67,7 +63,6 @@ jobs:
         with:
           name: windows binary
           path: .\build\x86_64-pc-windows-msvc\release\paxexpress.exe
-          
 
   # linux-release:
   #   name: Build Linux binary
