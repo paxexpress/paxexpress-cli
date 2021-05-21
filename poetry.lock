@@ -230,6 +230,18 @@ docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-cov", "pytest-enabler", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
 [[package]]
+name = "keyrings.alt"
+version = "4.0.2"
+description = "Alternate keyring implementations"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.extras]
+docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
+testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-cov", "jaraco.test (>=3.2.0)", "backports.unittest-mock", "keyring (>=20)", "fs (>=0.5,<2)", "pycryptodomex", "pytest-black (>=0.3.7)", "pytest-mypy", "gdata", "python-keyczar"]
+
+[[package]]
 name = "pycparser"
 version = "2.20"
 description = "C parser in Python"
@@ -419,7 +431,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "e8a530250736a2cc082d1eb46850132e5f05f03381e28c06f1f17845e1f15b85"
+content-hash = "2ac76cd7af93149d613ed83c278ec564c152422bebf173e2272250f2b18ab746"
 
 [metadata.files]
 ansicon = [
@@ -542,6 +554,10 @@ jinxed = [
 keyring = [
     {file = "keyring-22.4.0-py3-none-any.whl", hash = "sha256:d6c531f6d12f3304db6029af1d19894bd446ecbbadd22465fa0f096b3e12d258"},
     {file = "keyring-22.4.0.tar.gz", hash = "sha256:d981e02d134cc3d636a716fbc3ca967bc9609bae5dc21b0063e4409355993ddf"},
+]
+"keyrings.alt" = [
+    {file = "keyrings.alt-4.0.2-py3-none-any.whl", hash = "sha256:49ab586d0610e5f73e874fb3dcfc6b94f222d30a8457ef324f4124c34b3ea2f5"},
+    {file = "keyrings.alt-4.0.2.tar.gz", hash = "sha256:cc475635099d6edd7e475c5a479e5b4da5e811a3af04495a1e9ada488d16fe25"},
 ]
 pycparser = [
     {file = "pycparser-2.20-py2.py3-none-any.whl", hash = "sha256:7582ad22678f0fcd81102833f60ef8d0e57288b6b5fb00323d101be910e35705"},

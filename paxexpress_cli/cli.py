@@ -29,6 +29,9 @@ elif system == "Windows":
 
     set_keyring(Windows.WinVaultKeyring())
 else:
+    from keyring import set_keyring
+    from keyrings.alt.file import PlaintextKeyring
+    set_keyring(PlaintextKeyring())
     # automate platform detection
     pass
 cli = Typer()
