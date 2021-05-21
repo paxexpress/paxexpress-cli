@@ -7,15 +7,26 @@ Also check out the docs [here](https://github.com/paxexpress/docs)
 
 ## Installation
 
-### Precompiled
+### pipx
 
-From the [release page](https://github.com/paxexpress/paxexpress-cli/releases) binaries for Linux, MacOS and Windows can be downloaded.
+If you know and have `pipx` it is the preferred way of installing the paxexpress CLI is via [pipx](https://github.com/pipxproject/pipx):
 
-They are single file executables.
-No installer is provided as of this time.
+```
+pipx install paxexpress-cli
+```
 
 
-### from source
+### Compiled
+
+The PAX.express CLI is built with python.
+If you have python installed, it is recommended to use pipx to install it.
+If you do not have python we provide an executable that bundles python and all dependencies into a single file.
+These are slower than using pax.express directly via your system python.
+
+MacOS and Windows binaries are can be downloaded from the [release page](https://github.com/paxexpress/paxexpress-cli/releases).
+
+
+### From source
 
 Clone this repository from GitHhub.
 
