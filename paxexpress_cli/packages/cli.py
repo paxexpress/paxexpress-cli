@@ -1,7 +1,7 @@
 from typer import Typer, Option
 from .core import *
 
-from pax_express_client import pydantic_to_prompt
+from paxexpress_cli import pydantic_to_prompt
 
 package_cli = Typer(name="package")
 

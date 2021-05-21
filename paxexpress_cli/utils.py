@@ -2,7 +2,7 @@ from typing import Any, ClassVar, Dict, Optional, Callable, Union, List
 from rich import print
 import inquirer
 import typer
-from pax_express_client import env_settings
+from paxexpress_cli import env_settings
 from httpx import Response
 import keyring
 import re

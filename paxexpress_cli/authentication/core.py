@@ -19,7 +19,7 @@ from .models import (
     UsersScopesGetResponseModel,
     GetLegalDocumentsResponseModel,
 )
-from pax_express_client import (
+from paxexpress_cli import (
     print_error,
     print_message,
     get_url,
@@ -29,7 +29,7 @@ from pax_express_client import (
 import httpx
 import keyring
 import typer
-from pax_express_client import utils
+from paxexpress_cli import utils
 import inquirer
 
 pax_info_file_path = os.path.join(pathlib.Path.home(), ".pax_info")

@@ -1,7 +1,7 @@
 import platform
-import pax_express_client
+import paxexpress_cli
 from typer import Typer
-from pax_express_client import (
+from paxexpress_cli import (
     repo_cli,
     authentication_cli,
     package_cli,
@@ -45,7 +45,7 @@ self_cli = Typer(name="self")
 
 @self_cli.command(help="Display cli tool version")
 def version():
-    print(pax_express_client.__version__)
+    print(paxexpress_cli.__version__)
 
 
 cli.add_typer(self_cli, name="self")
