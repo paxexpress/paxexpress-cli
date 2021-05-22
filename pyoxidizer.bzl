@@ -181,7 +181,7 @@ def make_exe(dist):
     # python_config.write_modules_directory_env = "/tmp/oxidized/loaded_modules"
 
     # Evaluate a string as Python code when the interpreter starts.
-    python_config.run_command = "import pax_express_client.cli; pax_express_client.cli.main()"
+    python_config.run_command = "import paxexpress_cli.cli; paxexpress_cli.cli.main()"
 
     # Run a Python module as __main__ when the interpreter starts.
     # python_config.run_module = "pax_express_client.cli"
