@@ -7,6 +7,7 @@ from .core import (
     delete_version,
     update_version,
     get_version_for_file,
+    get_packages_available_versions,
 )
 
 version_cli = Typer(name="version")
@@ -50,6 +51,20 @@ def get(
         package=package,
         version=version,
         attribute_values=1 if attribute_values else 0,
+    )
+
+
+@version_cli.command(name="available", help="Get available version")
+def get_available(
+    subject: str = Option(..., "-s", "--subject"),
+    repo: str = Option(None, "-r", "--repo"),
+    package: str = Option(None, "-p", "--package"),
+):
+
+    get_packages_available_versions(
+        subject=subject,
+        repo=repo,
+        package=package,
     )
 
 
