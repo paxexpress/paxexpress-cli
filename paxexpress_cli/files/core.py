@@ -61,6 +61,10 @@ def get_package_file(
     params = {}
     params.update({"include_unpublished": include_unpublished})
     response = httpx.get(url=url, params=params)
+
+    if is_internal_call and response.status_code != 200:
+        return None
+
     if not is_internal_call:
         response_handler(response=response, return_with_out_model=True)
     else:
