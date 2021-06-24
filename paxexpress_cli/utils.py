@@ -53,14 +53,17 @@ def response_handler(
     return_model: Optional[Callable] = None,
     return_with_out_model: Optional[bool] = False,
     print_result: bool = True,
+    print_field: Optional[str] = None,
 ):
     if response.status_code == 201 or response.status_code == 200:
         if print_result:
-            result_print(
-                response.json(), is_success=True, status_code=response.status_code
-            )
+            if print_field:
+                to_print = response.json().get(print_field)
+            else:
+                to_print = response.json()
+            result_print(to_print, is_success=True, status_code=response.status_code)
         if return_model:
-            return return_model(**response.json())
+            return return_model(**to_print)
         elif return_with_out_model:
             return response.json()
     else:
@@ -137,11 +140,17 @@ def pydantic_to_prompt(model: ClassVar) -> Any:
 
 
 def custom_prompt(**kwargs):
+    regex = kwargs.pop("regex")
+    regex_error_message = kwargs.pop("regex_error_message")
+    if not regex:
+        regex = names_regex
+        regex_error_message = f"All names should be in {names_regex} format (e.g My-Package). Please try again! "
+    if not regex_error_message:
+        regex_error_message = f"Input should be in {regex} format!"
     value = typer.prompt(**kwargs)
-    while not re.match(names_regex, value, re.I):
-        print_error(
-            f"All names should be in {names_regex} format (e.g My-Package). Please try again! "
-        )
+
+    while not re.match(regex, value, re.I):
+        print_error(regex_error_message)
         value = typer.prompt(**kwargs)
     return value
 

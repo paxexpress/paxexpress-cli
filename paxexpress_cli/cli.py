@@ -7,6 +7,7 @@ from paxexpress_cli import (
     package_cli,
     file_cli,
     version_cli,
+    device_cli,
 )
 from rich import print
 
@@ -38,6 +39,7 @@ cli.add_typer(authentication_cli, name="auth", help="login and logout")
 cli.add_typer(package_cli, name="package", help="Work with packages")
 cli.add_typer(version_cli, name="version", help="Work with versions")
 cli.add_typer(file_cli, name="file", help="Work with files")
+cli.add_typer(device_cli, name="device", help="Work with devices")
 
 
 self_cli = Typer(name="self")
@@ -50,8 +52,10 @@ def version():
 
 cli.add_typer(self_cli, name="self")
 
+
 def main():
     cli()
+
 
 if __name__ == "__main__":
     cli()
