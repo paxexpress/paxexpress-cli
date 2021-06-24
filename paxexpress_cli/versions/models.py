@@ -58,15 +58,16 @@ class VersionGetResponseModel(VersionModel):
     pass
 
 
-class VersionSummeryModel(BaseModel):
+class VersionSummaryModel(BaseModel):
     name: str
     repo: Optional[str]
     package: Optional[str]
     owner: str
+    released: Optional[datetime.datetime]
 
 
 class VersionGetAvailableVersionResponseModel(BaseModel):
-    __root__: List[VersionSummeryModel] = []
+    __root__: List[VersionSummaryModel] = []
 
 
 class VersionCreateBodyModel(BaseModel):
