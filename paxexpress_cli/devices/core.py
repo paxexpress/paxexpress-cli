@@ -73,7 +73,7 @@ def get_device_provision_info(mac_address: str):
     username, header = get_auth_header_and_username()
     if not username:
         return
-    url = get_url(f"/devices/{mac_address}/provision")
+    url = get_url(f"/devices/{mac_address}/provisioning")
     response = httpx.get(url=url, headers=header)
     response_handler(
         response=response, return_model=DeviceProvisioningModel, print_field="data"
