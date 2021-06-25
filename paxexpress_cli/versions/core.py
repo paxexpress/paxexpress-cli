@@ -1,4 +1,3 @@
-from paxexpress_cli.utils import print_error, select_available_options
 from typing import Optional
 import httpx
 from .models import (
@@ -13,6 +12,8 @@ from paxexpress_cli import (
     response_handler,
     pydantic_to_prompt,
     is_operation_confirm,
+    print_error,
+    select_available_options
 )
 from ..authentication.core import get_auth_header_and_username
 from paxexpress_cli.repositories import core as repositories_core
@@ -22,7 +23,6 @@ from paxexpress_cli.packages import core as packages_core
 def select_from_available_versions(
     subject: str, repo: str, package: str
 ) -> Optional[str]:
-    from paxexpress_cli.versions.core import get_packages_available_versions
 
     versions = get_packages_available_versions(
         subject=subject, package=package, repo=repo, is_internal=True
