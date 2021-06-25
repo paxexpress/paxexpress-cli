@@ -12,27 +12,20 @@ class TopicModel(BaseModel):
     permissions: Permissions
 
 
-class DeviceModel(BaseModel):
-    username: Optional[str]
-    mac_address: str
-    password: Optional[str]
-    topics: Optional[List[TopicModel]] = []
-
-
 class CreateDeviceModel(BaseModel):
     mac_address: str
+    password: str
 
 
-class DeviceCreateResponseModel(BaseModel):
-    message: str = "success"
+class DeviceModel(CreateDeviceModel):
+    username: str
+    topics: List[TopicModel]
+    mqtt_password: str
 
 
-class DeviceListResponseModel(BaseModel):
-    data: List[DeviceModel]
-
-
-class DeviceDeleteResponseModel(BaseModel):
-    message: str = "success"
+class UpdateDeviceModel(BaseModel):
+    # Not allowed to change the mac address or the username
+    topics: Optional[List[TopicModel]]
 
 
 class DeviceProvisioningModel(BaseModel):
@@ -40,4 +33,25 @@ class DeviceProvisioningModel(BaseModel):
     username: str
     user_id: str
     password: str
+    server: str
     topics: List[TopicModel]
+
+
+class DeviceProvisioningResponseModel(BaseModel):
+    data: DeviceProvisioningModel
+
+
+class DeviceListResponseModel(BaseModel):
+    data: List[DeviceModel]
+
+
+class DeviceResponseModel(BaseModel):
+    data: DeviceModel
+
+
+class DeviceCreateResponseModel(BaseModel):
+    message: str
+
+
+class DeviceDeleteResponseModel(BaseModel):
+    message: str

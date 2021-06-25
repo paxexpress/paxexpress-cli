@@ -50,7 +50,7 @@ def cli_delete_device(
     )
 
 
-@device_cli.command(name="provision", help="get provision detail of device")
+@device_cli.command(name="provisioning", help="get provision detail of device")
 def cli_get_provision_info():
     mac_address = custom_prompt(
         text="Device MAC address",
