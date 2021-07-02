@@ -15,6 +15,7 @@ from .models import (
     DeviceListResponseModel,
     DeviceModel,
     UpdateDeviceModel,
+    DeviceOutModel,
 )
 import httpx
 

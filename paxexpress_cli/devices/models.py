@@ -11,6 +11,17 @@ class TopicModel(BaseModel):
     name: str
     permissions: Permissions
 
+    class Config:
+        schema_extra = {
+            "example": {
+                "name": "topic",
+                "permissions": {
+                    "publish": True,
+                    "subscribe": False,
+                },
+            }
+        }
+
 
 class CreateDeviceModel(BaseModel):
     mac_address: str
