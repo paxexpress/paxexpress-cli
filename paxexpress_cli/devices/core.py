@@ -19,7 +19,7 @@ from .models import (
 import httpx
 
 
-def add_device():
+def add_device() -> None:
     username, header = get_auth_header_and_username()
     if not username:
         return
@@ -29,14 +29,14 @@ def add_device():
     response_handler(response=response, return_model=DeviceCreateResponseModel)
 
 
-def update_device():
+def update_device() -> None:
     username, header = get_auth_header_and_username()
     if not username:
         return
     url = get_url()
 
 
-def get_device(mac_address: str):
+def get_device(mac_address: str) -> None:
     username, header = get_auth_header_and_username()
     if not username:
         return
@@ -45,7 +45,7 @@ def get_device(mac_address: str):
     response_handler(response=response, return_model=DeviceModel, print_field="data")
 
 
-def get_device_list():
+def get_device_list() -> None:
     username, header = get_auth_header_and_username()
     if not username:
         return
@@ -57,7 +57,7 @@ def get_device_list():
 def delete_device(
     mac_address: str,
     is_operation_confirmed: bool = False,
-):
+) -> None:
     username, header = get_auth_header_and_username()
     if not username:
         return
@@ -69,7 +69,7 @@ def delete_device(
     response_handler(response=response, return_model=DeviceDeleteResponseModel)
 
 
-def get_device_provision_info(mac_address: str):
+def get_device_provision_info(mac_address: str) -> None:
     username, header = get_auth_header_and_username()
     if not username:
         return
