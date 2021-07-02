@@ -14,7 +14,7 @@ from .models import (
     DeviceDeleteResponseModel,
     DeviceListResponseModel,
     DeviceModel,
-    DeviceProvisioningModel,
+    UpdateDeviceModel,
 )
 import httpx
 
@@ -29,11 +29,16 @@ def add_device() -> None:
     response_handler(response=response, return_model=DeviceCreateResponseModel)
 
 
-def update_device() -> None:
+def update_device(mac_address: str, is_operation_confirmed: bool = False) -> None:
     username, header = get_auth_header_and_username()
     if not username:
         return
-    url = get_url()
+    url = get_url("/devices/{mac_address}")
+    body = pydantic_to_prompt(model=UpdateDeviceModel)
+    if not is_operation_confirmed and not is_operation_confirm():
+        return
+    response = httpx.patch(url=url, json=body.dict(), headers=header)
+    response_handler(response=response, return_model=DeviceModel)
 
 
 def get_device(mac_address: str) -> None:
@@ -42,7 +47,7 @@ def get_device(mac_address: str) -> None:
         return
     url = get_url(f"/devices/{mac_address}")
     response = httpx.get(url=url, headers=header)
-    response_handler(response=response, return_model=DeviceModel, print_field="data")
+    response_handler(response=response, return_model=DeviceOutModel, print_field="data")
 
 
 def get_device_list() -> None:
@@ -67,14 +72,3 @@ def delete_device(
     url = get_url(f"/devices/{mac_address}")
     response = httpx.delete(url=url, headers=header)
     response_handler(response=response, return_model=DeviceDeleteResponseModel)
-
-
-def get_device_provision_info(mac_address: str) -> None:
-    username, header = get_auth_header_and_username()
-    if not username:
-        return
-    url = get_url(f"/devices/{mac_address}/provisioning")
-    response = httpx.get(url=url, headers=header)
-    response_handler(
-        response=response, return_model=DeviceProvisioningModel, print_field="data"
-    )

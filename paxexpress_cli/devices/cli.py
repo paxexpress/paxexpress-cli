@@ -7,6 +7,7 @@ from .core import (
     get_device,
     get_device_list,
     get_device_provision_info,
+    update_device,
 )
 
 device_cli = Typer(name="device", help="curd devices")
@@ -50,11 +51,21 @@ def cli_delete_device(
     )
 
 
-@device_cli.command(name="provisioning", help="get provision detail of device")
-def cli_get_provision_info():
+@device_cli.command(name="update", help="update device")
+def cli_update_device(
+    is_operation_confirmed: bool = Option(
+        False,
+        "-y",
+        help="auto confirm operation",
+    ),
+):
     mac_address = custom_prompt(
         text="Device MAC address",
         regex="^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$",
         regex_error_message="Invalid MAC address",
     )
-    get_device_provision_info(mac_address=mac_address)
+
+    update_device(
+        mac_address=mac_address,
+        is_operation_confirmed=is_operation_confirmed,
+    )

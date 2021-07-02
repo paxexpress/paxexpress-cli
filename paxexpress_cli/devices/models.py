@@ -14,13 +14,19 @@ class TopicModel(BaseModel):
 
 class CreateDeviceModel(BaseModel):
     mac_address: str
-    password: str
 
 
 class DeviceModel(CreateDeviceModel):
-    username: str
+    owner_name: str
     topics: List[TopicModel]
     mqtt_password: str
+    device_token: str
+
+
+class DeviceOutModel(DeviceModel):
+    mqtt_broker_url: str
+    mqtt_user: str
+    mqtt_client_id: str
 
 
 class UpdateDeviceModel(BaseModel):
@@ -28,25 +34,12 @@ class UpdateDeviceModel(BaseModel):
     topics: Optional[List[TopicModel]]
 
 
-class DeviceProvisioningModel(BaseModel):
-    client_id: str
-    username: str
-    user_id: str
-    password: str
-    server: str
-    topics: List[TopicModel]
-
-
-class DeviceProvisioningResponseModel(BaseModel):
-    data: DeviceProvisioningModel
-
-
 class DeviceListResponseModel(BaseModel):
-    data: List[DeviceModel]
+    data: List[DeviceOutModel]
 
 
 class DeviceResponseModel(BaseModel):
-    data: DeviceModel
+    data: DeviceOutModel
 
 
 class DeviceCreateResponseModel(BaseModel):
