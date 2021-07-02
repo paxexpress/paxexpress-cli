@@ -6,7 +6,6 @@ from .core import (
     delete_device,
     get_device,
     get_device_list,
-    get_device_provision_info,
     update_device,
 )
 

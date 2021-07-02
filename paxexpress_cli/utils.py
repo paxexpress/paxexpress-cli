@@ -56,16 +56,16 @@ def response_handler(
     print_field: Optional[str] = None,
 ):
     if response.status_code == 201 or response.status_code == 200:
+        to_print = response.json()
         if print_result:
             if print_field:
-                to_print = response.json().get(print_field)
-            else:
-                to_print = response.json()
+                to_print = to_print.get(print_field)
             result_print(to_print, is_success=True, status_code=response.status_code)
+
         if return_model:
             return return_model(**to_print)
         elif return_with_out_model:
-            return response.json()
+            return to_print
     else:
         result_print(response.text, is_success=False, status_code=response.status_code)
 
@@ -141,7 +141,7 @@ def pydantic_to_prompt(model: ClassVar) -> Any:
 
 def custom_prompt(**kwargs):
     regex = kwargs.pop("regex", None)
-    regex_error_message = kwargs.pop("regex_error_message")
+    regex_error_message = kwargs.pop("regex_error_message", None)
     if not regex:
         regex = names_regex
         regex_error_message = f"All names should be in {names_regex} format (e.g My-Package). Please try again! "
