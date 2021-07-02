@@ -50,21 +50,24 @@ def cli_delete_device(
     )
 
 
-@device_cli.command(name="update", help="update device")
-def cli_update_device(
-    is_operation_confirmed: bool = Option(
-        False,
-        "-y",
-        help="auto confirm operation",
-    ),
-):
-    mac_address = custom_prompt(
-        text="Device MAC address",
-        regex="^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$",
-        regex_error_message="Invalid MAC address",
-    )
+# Typer prompt cannot parse nested objects Topics: List[TopicModel]
+# we need to implement this ourselves
+# See https://git.r0k.de/gr/internal/paxexpress/paxexpress/-/issues/83
+# @device_cli.command(name="update", help="update device")
+# def cli_update_device(
+#     is_operation_confirmed: bool = Option(
+#         False,
+#         "-y",
+#         help="auto confirm operation",
+#     ),
+# ):
+#     mac_address = custom_prompt(
+#         text="Device MAC address",
+#         regex="^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$",
+#         regex_error_message="Invalid MAC address",
+#     )
 
-    update_device(
-        mac_address=mac_address,
-        is_operation_confirmed=is_operation_confirmed,
-    )
+#     update_device(
+#         mac_address=mac_address,
+#         is_operation_confirmed=is_operation_confirmed,
+#     )
