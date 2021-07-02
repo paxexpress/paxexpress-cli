@@ -140,7 +140,7 @@ def pydantic_to_prompt(model: ClassVar) -> Any:
 
 
 def custom_prompt(**kwargs):
-    regex = kwargs.pop("regex")
+    regex = kwargs.pop("regex", None)
     regex_error_message = kwargs.pop("regex_error_message")
     if not regex:
         regex = names_regex
