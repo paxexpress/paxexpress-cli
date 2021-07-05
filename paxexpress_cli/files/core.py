@@ -14,6 +14,7 @@ import os
 import typer
 from paxexpress_cli.packages import core as packages_core
 from paxexpress_cli.repositories import core as repositories
+from paxexpress_cli.versions import core as versions_core
 
 
 def get_versions_file(
@@ -54,8 +55,8 @@ def get_package_file(
             subject=subject, repo=repo
         )
     if not version:
-        version = select_from_available_versions(
-            subject=subject, repo=repo, package=package, filename=None
+        version = versions_core.select_from_available_versions(
+            subject=subject, repo=repo, package=package
         )
     url = get_url(f"/packages/{subject}/{repo}/{package}/versions/{version}/files")
     params = {}
@@ -147,7 +148,7 @@ def file_download(
             subject=subject, repo=repo
         )
     if not version:
-        version = select_from_available_versions(
+        version = select_from_available_versions_by_filename(
             subject=subject, repo=repo, package=package, filename=file_name
         )
 
@@ -166,7 +167,7 @@ def file_download(
         print_error(response.text)
 
 
-def select_from_available_versions(
+def select_from_available_versions_by_filename(
     subject: str, repo: str, package: str, filename: Optional[str]
 ) -> Optional[str]:
     files = get_versions_file(
@@ -231,7 +232,7 @@ def delete_file(
             subject=username, repo=repo
         )
     if not version:
-        version = select_from_available_versions(
+        version = select_from_available_versions_by_filename(
             subject=username, repo=repo, package=package, filename=filename
         )
 
