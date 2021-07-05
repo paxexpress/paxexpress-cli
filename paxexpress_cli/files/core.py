@@ -102,9 +102,13 @@ def file_upload(
         package = packages_core.select_from_available_packages(
             subject=username, repo=repo
         )
+    file_path: str = filename
+    if os.path.isabs(file_path):
+        filename = os.path.basename(file_path)
+
     url = get_url(f"/content/{username}/{repo}/{package}/{version}/{filename}")
     try:
-        with open(filename, "br") as file:
+        with open(file_path, "br") as file:
             data = file.read()
             headers = {
                 "x-bintray-publish": "1",
